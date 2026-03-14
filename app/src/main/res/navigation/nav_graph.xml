@@ -19,6 +19,29 @@
         tools:layout="@layout/fragment_login" >
         <action
             android:id="@+id/action_loginFragment2_to_fragmentBancos"
-            app:destination="@id/fragmentBancos" />
+            app:destination="@id/fragmentBancos"
+            app:popUpTo="@id/loginFragment2"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_loginToCadastro"
+            app:destination="@id/fragmentCadastro"
+            app:popUpTo="@id/loginFragment2"
+            app:popUpToInclusive="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/fragmentCadastro"
+        android:name="com.example.meucontrolefinaceiro.fragments.FragmentCadastro"
+        android:label="fragment_cadastro"
+        tools:layout="@layout/fragment_cadastro" >
+        <action
+            android:id="@+id/action_fragmentCadastroToLogin"
+            app:destination="@id/loginFragment2"
+            app:popUpTo="@id/fragmentCadastro"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_fragmentCadastroTobancos"
+            app:destination="@id/fragmentBancos"
+            app:popUpTo="@id/fragmentCadastro"
+            app:popUpToInclusive="true" />
     </fragment>
 </navigation>

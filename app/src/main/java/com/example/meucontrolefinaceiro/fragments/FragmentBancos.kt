@@ -44,6 +44,7 @@ class FragmentBancos : Fragment() {
     }
 
     private fun verificarLogin(){
+
         /*if (FirebaseAuth.getInstance().currentUser == null){
             findNavController().navigate(R.id.action_fragmentBancos_to_loginFragment2)
         }*/

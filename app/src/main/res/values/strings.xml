@@ -3,30 +3,11 @@
     <string name="app_name">Resumo Financeriro</string>
     <string name="app_titulo_caixa">Resumo</string>
 
-    <!--saldos-->
-    <string name="app_total">Valor Total</string>
-    <string name="app_investidoSaldo">Investido</string>
-    <string name="app_SaldoEmConta">Saldo em Conta</string>
-    <string name="app_debitosPendentes">Debitos Pendentes</string>
-    <string name="app_futuro">Saldo Apos Pagar Tudo</string>
-    <string name="app_MercadoPago">Mercado Pago</string>
-    <string name="app_Alios">Ailos</string>
-    <string name="app_Nubank">Nubank</string>
-    <string name="app_Previdencia">Pevidencias Privada</string>
-    <string name="app_XpDigital">XP conta digital</string>
-    <string name="app_XpInvestimetos">XP Investimetnos</string>
-    <string name="app_crypto">Cryptomoedas</string>
-    <string name="app_previdenciaTotal">Saldo Total em Previdencias</string>
-    <string name="app_previdenciaQuanta">Previdencia Quanta</string>
-    <string name="app_previdenciaTGrao">Previdencia Grão</string>
-
 
     <string name="app_attData">Ultima Atualização</string>
     <string name="app_contasTitulo">Contas Bancarias</string>
     <string name="app_textNomebanco">Nome do banco Exemplo</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <!-- Strings used for fragments for navigation -->
     <string name="first_fragment_label">First Fragment</string>
     <string name="second_fragment_label">Second Fragment</string>
     <string name="next">Next</string>
@@ -41,7 +22,7 @@
     <string name="radioInvestimentos">Investimentos</string>
     <string name="botaoAdicnionartext">Adicionar Conta</string>
 
-    <!-- Strings do login -->
+
     <string name="login_welcome">Bem-vindo de volta!</string>
     <string name="login_subtitle">Acesse sua conta para continuar</string>
     <string name="prompt_email">E-mail</string>
@@ -57,8 +38,17 @@
     <string name="invalid_password">A senha deve ter mais de 5 caracteres</string>
     <string name="login_failed">Falha no login</string>
 
-    <!-- Strings mensagens de erro -->
+
+    <string name="login_failed_nome">Você precisa digitar seu nome.</string>
     <string name="login_failed_email">Você precisa digitar seu email.</string>
     <string name="login_failed_password">Você precisa digitar sua senha.</string>
+
+
+    <string name="cadastro_title">Crie sua conta</string>
+    <string name="cadastro_subtitle">Preencha os dados abaixo para começar</string>
+    <string name="prompt_name">Nome completo</string>
+    <string name="action_register">Cadastrar</string>
+    <string name="cadastro_already_have_account">Já tem uma conta?</string>
+    <string name="login_sign_in">Entrar</string>
 
 </resources>
