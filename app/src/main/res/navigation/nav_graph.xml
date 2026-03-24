@@ -6,7 +6,7 @@
     app:startDestination="@id/loginFragment2">
     <fragment
         android:id="@+id/fragmentBancos"
-        android:name="com.example.meucontrolefinaceiro.fragments.FragmentBancos"
+        android:name="com.example.meucontrolefinaceiro.ui.bancos.FragmentBancos"
         android:label="FragmentBancos" >
         <action
             android:id="@+id/action_fragmentBancos_to_loginFragment2"
@@ -14,7 +14,7 @@
     </fragment>
     <fragment
         android:id="@+id/loginFragment2"
-        android:name="com.example.meucontrolefinaceiro.fragments.LoginFragment"
+        android:name="com.example.meucontrolefinaceiro.ui.login.LoginFragment"
         android:label="fragment_login"
         tools:layout="@layout/fragment_login" >
         <action
@@ -30,7 +30,7 @@
     </fragment>
     <fragment
         android:id="@+id/fragmentCadastro"
-        android:name="com.example.meucontrolefinaceiro.fragments.FragmentCadastro"
+        android:name="com.example.meucontrolefinaceiro.ui.cadastro.FragmentCadastro"
         android:label="fragment_cadastro"
         tools:layout="@layout/fragment_cadastro" >
         <action

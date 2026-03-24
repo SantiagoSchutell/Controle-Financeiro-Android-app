@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@color/white"
     android:padding="24dp"
-    tools:context=".fragments.FragmentCadastro">
+    tools:context=".ui.cadastro.FragmentCadastro">
 
     <TextView
         android:id="@+id/tvTitleCadastro"

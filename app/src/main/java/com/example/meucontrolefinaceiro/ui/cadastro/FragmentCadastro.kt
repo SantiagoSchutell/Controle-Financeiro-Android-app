@@ -1,5 +1,4 @@
-package com.example.meucontrolefinaceiro.fragments
-
+package com.example.meucontrolefinaceiro.ui.cadastro
 
 import android.os.Bundle
 import android.util.Log
@@ -8,14 +7,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
-import com.example.meucontrolefinaceiro.Data.constantes
+import com.example.meucontrolefinaceiro.utils.constantes
 import com.example.meucontrolefinaceiro.R
 import com.example.meucontrolefinaceiro.databinding.FragmentCadastroBinding
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
-
 
 class FragmentCadastro : Fragment() {
     private val binding by lazy {
@@ -31,7 +29,7 @@ class FragmentCadastro : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         return binding.root
     }
 
@@ -101,4 +99,3 @@ class FragmentCadastro : Fragment() {
     }
 
 }
-

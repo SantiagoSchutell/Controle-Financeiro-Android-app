@@ -1,4 +1,4 @@
-package com.example.meucontrolefinaceiro.Data
+package com.example.meucontrolefinaceiro.utils
 
 object constantes {
     val USER = "usuario"

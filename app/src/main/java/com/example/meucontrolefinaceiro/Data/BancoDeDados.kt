@@ -61,7 +61,7 @@ class  BancoDeDados(context: Context) : SQLiteOpenHelper(context, "AppData", nul
 
         try {
 
-            val escrita = writableDatabase.execSQL(setValor)
+            writableDatabase.execSQL(setValor)
             Log.i("AppTeste", "Sucesso ao Atualizar dados")
 
         } catch (e: Exception) {
@@ -75,7 +75,7 @@ class  BancoDeDados(context: Context) : SQLiteOpenHelper(context, "AppData", nul
 
         try {
 
-            val escrita = writableDatabase.execSQL(setValor)
+            writableDatabase.execSQL(setValor)
             Log.i("AppTeste", "Sucesso ao Atualizar dados")
 
         } catch (e: Exception) {
@@ -100,7 +100,7 @@ class  BancoDeDados(context: Context) : SQLiteOpenHelper(context, "AppData", nul
 
         try {
 
-            val escrita = writableDatabase.execSQL(setValor)
+            writableDatabase.execSQL(setValor)
             Log.i("AppTeste", "Sucesso ao Atualizar dados")
 
         } catch (e: Exception) {
@@ -473,7 +473,7 @@ class  BancoDeDados(context: Context) : SQLiteOpenHelper(context, "AppData", nul
         val db = this.readableDatabase
         val query = "SELECT DATAATT FROM AppData WHERE id = 1"
 
-        var cursor: android.database.Cursor? = null
+        var cursor: Cursor? = null
         try {
             cursor = db.rawQuery(query, null)
             if (cursor.moveToFirst()) {

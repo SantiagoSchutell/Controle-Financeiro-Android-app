@@ -29,7 +29,7 @@ class functions (private val context: Context) {
         val db = Appdata.readableDatabase
         val query = "SELECT CREDITOALIOS, DEBITOALIOS FROM AppData WHERE id = 1"
 
-        var cursor: android.database.Cursor? = null
+        var cursor: Cursor? = null
         try {
             cursor = db.rawQuery(query, null)
             if (cursor.moveToFirst()) {
@@ -59,7 +59,7 @@ class functions (private val context: Context) {
         val db = Appdata.readableDatabase
         val query = "SELECT CREDITOSMP, DEBITOSMP FROM AppData WHERE id = 1"
 
-        var cursor: android.database.Cursor? = null
+        var cursor: Cursor? = null
         try {
             cursor = db.rawQuery(query, null)
             if (cursor.moveToFirst()) {
@@ -89,7 +89,7 @@ class functions (private val context: Context) {
         val db = Appdata.readableDatabase
         val query = "SELECT CREDITOSNU, DEBITOSNU FROM AppData WHERE id = 1"
 
-        var cursor: android.database.Cursor? = null
+        var cursor: Cursor? = null
         try {
             cursor = db.rawQuery(query, null)
             if (cursor.moveToFirst()) {
@@ -119,7 +119,7 @@ class functions (private val context: Context) {
         val db = Appdata.readableDatabase
         val query = "SELECT CREDITOXPD, DEBITOXPD FROM AppData WHERE id = 1"
 
-        var cursor: android.database.Cursor? = null
+        var cursor: Cursor? = null
         try {
             cursor = db.rawQuery(query, null)
             if (cursor.moveToFirst()) {
@@ -149,7 +149,7 @@ class functions (private val context: Context) {
         val db = Appdata.readableDatabase
         val query = "SELECT SALDOPREV1, SALDOPREV2 FROM AppData WHERE id = 1"
 
-        var cursor: android.database.Cursor? = null
+        var cursor: Cursor? = null
         try {
             cursor = db.rawQuery(query, null)
             if (cursor.moveToFirst()) {
@@ -179,7 +179,7 @@ class functions (private val context: Context) {
         val db = Appdata.readableDatabase
         val query = "SELECT CRYPTOSALDO, SALDOPREV2 FROM AppData WHERE id = 1"
 
-        var cursor: android.database.Cursor? = null
+        var cursor: Cursor? = null
         try {
             cursor = db.rawQuery(query, null)
             if (cursor.moveToFirst()) {
@@ -267,7 +267,7 @@ class functions (private val context: Context) {
         val db = Appdata.readableDatabase
         val query = "SELECT DATAATT FROM AppData WHERE id = 1"
 
-        var cursor: android.database.Cursor? = null
+        var cursor: Cursor? = null
         try {
             cursor = db.rawQuery(query, null)
             if (cursor.moveToFirst()) {

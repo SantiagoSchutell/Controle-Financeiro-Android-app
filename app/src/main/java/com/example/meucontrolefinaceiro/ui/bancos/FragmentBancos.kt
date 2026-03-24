@@ -1,22 +1,18 @@
-package com.example.meucontrolefinaceiro.fragments
+package com.example.meucontrolefinaceiro.ui.bancos
 
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
-import android.view.View.GONE
-import android.view.View.VISIBLE
 import android.view.ViewGroup
-import android.widget.RadioButton
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
-import com.example.meucontrolefinaceiro.Data.constantes
+import com.example.meucontrolefinaceiro.utils.constantes
 import com.example.meucontrolefinaceiro.R
 import com.example.meucontrolefinaceiro.databinding.FragmentBancosBinding
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.SetOptions
 
 class FragmentBancos : Fragment() {
 
@@ -30,7 +26,7 @@ class FragmentBancos : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         return binding.root
     }
 
@@ -39,15 +35,15 @@ class FragmentBancos : Fragment() {
         verificarLogin()
 
         binding.fabAddConta.setOnClickListener {
-            binding.AddConta.visibility = VISIBLE
-            binding.fabAddConta.visibility = GONE
-            binding.outros.visibility = GONE
+            binding.AddConta.visibility = View.VISIBLE
+            binding.fabAddConta.visibility = View.GONE
+            binding.outros.visibility = View.GONE
         }
 
         binding.btnCancelar.setOnClickListener {
-            binding.AddConta.visibility = GONE
-            binding.fabAddConta.visibility = VISIBLE
-            binding.outros.visibility = VISIBLE
+            binding.AddConta.visibility = View.GONE
+            binding.fabAddConta.visibility = View.VISIBLE
+            binding.outros.visibility = View.VISIBLE
         }
 
         binding.btnAdicionar.setOnClickListener {
@@ -79,7 +75,7 @@ class FragmentBancos : Fragment() {
         if (verificarCampos() == true){
             val radioGroup = binding.radioGroup
             radioGroup.setOnCheckedChangeListener { group, checkedId ->
-                if (binding.radioContaCorrente.isChecked()){
+                if (binding.radioContaCorrente.isChecked){
                     tipo = "contaCorrente"
                 } else{
                     tipo = "contaInvestimentos"
