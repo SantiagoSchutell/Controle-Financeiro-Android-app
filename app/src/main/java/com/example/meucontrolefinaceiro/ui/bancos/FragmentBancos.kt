@@ -1,24 +1,27 @@
 package com.example.meucontrolefinaceiro.ui.bancos
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import com.example.meucontrolefinaceiro.utils.constantes
 import com.example.meucontrolefinaceiro.R
 import com.example.meucontrolefinaceiro.databinding.FragmentBancosBinding
+import com.example.meucontrolefinaceiro.utils.ExtrasFunc
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
 
 class FragmentBancos : Fragment() {
 
-      private val binding by lazy {
+    private val binding by lazy {
         FragmentBancosBinding.inflate(layoutInflater)
     }
+
+    private val viewModel: BancosViewModel by viewModels()
 
     private var idUsuario: String? = null
 
@@ -30,9 +33,51 @@ class FragmentBancos : Fragment() {
         return binding.root
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        verificarLogin()
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        if (ExtrasFunc().verificarLogin()) {
+            idUsuario = FirebaseAuth.getInstance().currentUser?.uid
+        } else {
+            findNavController().navigate(R.id.action_fragmentBancos_to_loginFragment2)
+        }
+
+
+        viewModel.erroNome.observe(viewLifecycleOwner) { resId ->
+            binding.editTextNomeConta.error = resId?.let { getString(it) }
+            binding.progressBarAddBancos.visibility = GONE
+        }
+
+        viewModel.erroRadio.observe(viewLifecycleOwner) { resId ->
+            binding.progressBarAddBancos.visibility = GONE
+            Snackbar.make(
+                binding.root,
+                resId?.let { getString(it) }.toString(),
+                Snackbar.LENGTH_LONG
+            ).show()
+            binding.radioGroup.setBackgroundColor(R.color.red)
+        }
+
+        viewModel.loading.observe(viewLifecycleOwner) { isloading ->
+            if (isloading == false) {
+                binding.progressBarAddBancos.visibility = GONE
+            } else{
+                binding.progressBarAddBancos.visibility = VISIBLE
+            }
+        }
+
+        viewModel.salvarStatus.observe(viewLifecycleOwner) { isSalvo ->
+            if (isSalvo == "salvo") {
+                binding.AddConta.visibility = GONE
+                binding.fabAddConta.visibility = VISIBLE
+                binding.outros.visibility = VISIBLE
+            } else{
+                binding.AddConta.visibility = VISIBLE
+                binding.fabAddConta.visibility = GONE
+                binding.outros.visibility = GONE
+            }
+        }
+
 
         binding.fabAddConta.setOnClickListener {
             binding.AddConta.visibility = View.VISIBLE
@@ -47,75 +92,16 @@ class FragmentBancos : Fragment() {
         }
 
         binding.btnAdicionar.setOnClickListener {
-            adicionarNovaConta()
-        }
-    }
+            val nome = binding.editTextNomeConta.text.toString()
+            val isCorrente = binding.radioContaCorrente.isChecked
+            val nenhumSelecionado = binding.radioGroup.checkedRadioButtonId == -1
 
-
-
-
-    private fun adicionarNovaConta(){
-        val nome = binding.editTextNomeConta.text.toString()
-        var tipo: String? = null
-
-        fun verificarCampos(): Boolean{
-            if (binding.editTextNomeConta.text.isNotEmpty()){
-                if (binding.radioGroup.checkedRadioButtonId > -1){
-                    return true
-                } else{
-                    binding.radioGroup.setBackgroundColor(R.color.red)
-                    return false
-                }
-            } else{
-                binding.editTextNomeConta.error = getString(R.string.add_error_name)
-                return false
-            }
-        }
-
-        if (verificarCampos() == true){
-            val radioGroup = binding.radioGroup
-            radioGroup.setOnCheckedChangeListener { group, checkedId ->
-                if (binding.radioContaCorrente.isChecked){
-                    tipo = "contaCorrente"
-                } else{
-                    tipo = "contaInvestimentos"
-                }
+            if (nenhumSelecionado) {
+                Snackbar.make(binding.root, R.string.add_error_data, Snackbar.LENGTH_LONG).show()
+            } else {
+                viewModel.adicionarNovaConta(idUsuario!!, nome, isCorrente)
             }
 
-            val dadosDaConta = mapOf(
-                "nomeConta" to nome,
-                "tipoConta" to tipo.toString()
-            )
-
-            salvarFirebase(idUsuario!!, nome, dadosDaConta)
-
-
-        }else{
-            Snackbar.make(requireView(), getString(R.string.add_error_data), Snackbar.LENGTH_LONG).show()
         }
-
-    }
-
-    private fun verificarLogin(){
-        val firebaseAuthVerifi = FirebaseAuth.getInstance().currentUser
-
-        if (firebaseAuthVerifi == null){
-            findNavController().navigate(R.id.action_fragmentBancos_to_loginFragment2)
-        } else{
-            idUsuario = firebaseAuthVerifi.uid.toString()
-        }
-    }
-
-    private fun salvarFirebase(idUser: String, nomeConta: String, contasInfo: Map<String, String>){
-        FirebaseFirestore.getInstance()
-            .collection(constantes.USER)
-            .document(idUser)
-            .update(nomeConta, contasInfo)
-            .addOnSuccessListener {
-                findNavController().navigate(R.id.action_fragmentCadastroTobancos)
-            }
-            .addOnFailureListener { error->
-                Log.i("erroFinance", "Erro em salvarFirebase(FragmentCadastro: ${error.message}")
-            }
     }
 }
