@@ -1,11 +1,17 @@
 package com.example.meucontrolefinaceiro.ui.bancos
 
+import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.meucontrolefinaceiro.R
 import com.example.meucontrolefinaceiro.utils.constantes
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.FirebaseStorage
+import java.io.ByteArrayOutputStream
 
 class BancosViewModel : ViewModel() {
 
@@ -24,7 +30,7 @@ class BancosViewModel : ViewModel() {
 
 
 
-    fun adicionarNovaConta(userId: String, nome : String, isCorrente: Boolean){
+    fun adicionarNovaConta(userId: String, nome : String, isCorrente: Boolean, uri: Uri, context: Context){
         _loading.value = true
 
             if (nome.isEmpty()){
@@ -38,24 +44,28 @@ class BancosViewModel : ViewModel() {
             //tipo
             val tipoDeConta = if (isCorrente) "contaCorrente" else "contaInvestimentos"
 
-            val dadosDaConta = mapOf(
-                "nomeConta" to nome,
-                "tipoConta" to tipoDeConta
-            )
 
-            salvarFirebase(userId, nome, dadosDaConta)
+            compactarImagem(userId, nome, tipoDeConta, uri, context )
+
 
     }
 
-    fun salvarFirebase(idUser: String, nomeConta: String, contasInfo: Map<String, String>){
+    fun salvarFirebase(idUser: String, nomeConta: String, tipoDeConta:String, uri: String, context: Context){
+
+        val dadosDaConta = mapOf(
+            "nomeConta" to nomeConta,
+            "tipoConta" to tipoDeConta,
+            "uri" to uri
+        )
+
+
         FirebaseFirestore.getInstance()
             .collection(constantes.USER)
             .document(idUser)
             .collection("Contas")
             .document()
-            .set(contasInfo)
+            .set(dadosDaConta)
             .addOnSuccessListener {
-                _salvarStatus.value = "salvo"
                 _loading.value = false
             }
             .addOnFailureListener { error->
@@ -64,5 +74,57 @@ class BancosViewModel : ViewModel() {
 
             }
 
+    }
+
+    fun salvarStorage(idUser: String, bytesComprimidos: ByteArray, nomebanco: String, tipoConta:String,  context: Context){
+        val storageRef = FirebaseStorage.getInstance().reference.child(idUser).child(constantes.IMAGENS).child(nomebanco)
+
+        storageRef.putBytes(bytesComprimidos)
+
+            .addOnSuccessListener { image->
+                storageRef.downloadUrl.addOnSuccessListener {uriDownload->
+                    val urlParaSalvarNoBanco = uriDownload.toString()
+
+                    salvarFirebase(idUser, nomebanco, tipoConta,urlParaSalvarNoBanco, context )
+                    _salvarStatus.value = "salvo"
+
+                    _loading.value = false
+                }
+
+            }
+            .addOnFailureListener { error->
+                _salvarStatus.value = "erro"
+                _loading.value = false
+
+            }
+    }
+
+    fun compactarImagem(idUser: String, nomeConta: String,tipoConta:String, uri: Uri, context: Context){
+          try {
+              _loading.value = true
+            val inputStream = context.contentResolver.openInputStream(uri)
+
+            val bitMap = BitmapFactory.decodeStream(inputStream)
+            inputStream?.close()
+
+            if (bitMap == null) {
+                _loading.value = false
+                _salvarStatus.value = "erro"
+
+            }
+
+            val outputStream = ByteArrayOutputStream()
+            bitMap.compress(Bitmap.CompressFormat.JPEG, 80, outputStream)
+
+             val bytes = outputStream.toByteArray()
+
+              salvarStorage(idUser,bytes, nomeConta, tipoConta, context)
+
+        }catch (e: Exception){
+            e.printStackTrace()
+              _loading.value = false
+              _salvarStatus.value = "erro"
+
+          }
     }
 }

@@ -54,4 +54,5 @@
 
     <string name="add_error_name">Você precisa dar um nome para essa conta.</string>
     <string name="add_error_data">Você escolher o tipo da conta.</string>
+    <string name="add_error_img">Você precisa escolher uma imagem.</string>
 </resources>

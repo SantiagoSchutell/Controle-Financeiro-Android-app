@@ -1,14 +1,18 @@
 package com.example.meucontrolefinaceiro.ui.bancos
 
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import coil.load
 import com.example.meucontrolefinaceiro.R
 import com.example.meucontrolefinaceiro.databinding.FragmentBancosBinding
 import com.example.meucontrolefinaceiro.utils.ExtrasFunc
@@ -33,8 +37,23 @@ class FragmentBancos : Fragment() {
         return binding.root
     }
 
+    private var uriImagem: Uri? = null
+
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val selecionarImagemLauncher = registerForActivityResult(
+            ActivityResultContracts.PickVisualMedia()
+        ) { uri ->
+            if (uri != null) {
+                uriImagem = uri
+                binding.imageIco.load(uri)
+
+            } else {
+                uriImagem = null
+            }
+        }
+
 
         if (ExtrasFunc().verificarLogin()) {
             idUsuario = FirebaseAuth.getInstance().currentUser?.uid
@@ -61,8 +80,12 @@ class FragmentBancos : Fragment() {
         viewModel.loading.observe(viewLifecycleOwner) { isloading ->
             if (isloading == false) {
                 binding.progressBarAddBancos.visibility = GONE
+                binding.btnAdicionar.visibility = VISIBLE
+                binding.btnCancelar.visibility = VISIBLE
             } else{
                 binding.progressBarAddBancos.visibility = VISIBLE
+                binding.btnAdicionar.visibility = GONE
+                binding.btnCancelar.visibility = GONE
             }
         }
 
@@ -92,16 +115,28 @@ class FragmentBancos : Fragment() {
         }
 
         binding.btnAdicionar.setOnClickListener {
+
             val nome = binding.editTextNomeConta.text.toString()
             val isCorrente = binding.radioContaCorrente.isChecked
             val nenhumSelecionado = binding.radioGroup.checkedRadioButtonId == -1
 
+
             if (nenhumSelecionado) {
                 Snackbar.make(binding.root, R.string.add_error_data, Snackbar.LENGTH_LONG).show()
             } else {
-                viewModel.adicionarNovaConta(idUsuario!!, nome, isCorrente)
+                if (uriImagem != null){
+                    viewModel.adicionarNovaConta(idUsuario!!, nome, isCorrente, uriImagem!! , requireContext())
+                } else{
+                    Snackbar.make(binding.root, R.string.add_error_img, Snackbar.LENGTH_LONG).show()
+                }
             }
 
+        }
+
+        binding.imageIco.setOnClickListener {
+            selecionarImagemLauncher.launch(
+                PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+            )
         }
     }
 }

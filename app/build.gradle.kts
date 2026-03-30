@@ -6,6 +6,7 @@ plugins {
 
 }
 
+
 android {
     namespace = "com.example.meucontrolefinaceiro"
     compileSdk = 35
@@ -52,6 +53,7 @@ dependencies {
     implementation(libs.androidx.annotation)
     implementation(libs.androidx.lifecycle.livedata.ktx)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
+    implementation(libs.firebase.appcheck.debug)
     val nav_version = "2.9.0"
 
     implementation("androidx.navigation:navigation-compose:$nav_version")
@@ -65,6 +67,11 @@ dependencies {
     implementation("com.google.firebase:firebase-auth:24.0.1")
     implementation("com.google.firebase:firebase-firestore:26.1.1")
     implementation("com.google.firebase:firebase-storage:22.0.1")
+    implementation("com.google.firebase:firebase-appcheck-playintegrity:17.1.2")
+    implementation("com.google.firebase:firebase-appcheck-debug:17.1.2")
+
+
+    implementation("io.coil-kt:coil:2.6.0")
 
 
 
