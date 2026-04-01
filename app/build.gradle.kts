@@ -54,6 +54,7 @@ dependencies {
     implementation(libs.androidx.lifecycle.livedata.ktx)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
     implementation(libs.firebase.appcheck.debug)
+    implementation(libs.androidx.ui)
     val nav_version = "2.9.0"
 
     implementation("androidx.navigation:navigation-compose:$nav_version")
