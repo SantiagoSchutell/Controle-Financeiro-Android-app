@@ -29,7 +29,10 @@ class FragmentBancos : Fragment() {
 
     private val viewModel: BancosViewModel by viewModels()
 
-    private val  adapterBancos = BancosAdapter()
+    private val  adapterBancos = BancosAdapter(){click->
+
+        findNavController().navigate(R.id.action_fragmentBancos_to_loginFragment2)
+    }
 
     private var idUsuario: String? = null
 

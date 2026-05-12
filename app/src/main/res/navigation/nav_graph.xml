@@ -11,6 +11,9 @@
         <action
             android:id="@+id/action_fragmentBancos_to_loginFragment2"
             app:destination="@id/loginFragment2" />
+        <action
+            android:id="@+id/bancosToBancoAberto"
+            app:destination="@id/fragmentbancoAberto" />
     </fragment>
     <fragment
         android:id="@+id/loginFragment2"
@@ -42,6 +45,17 @@
             android:id="@+id/action_fragmentCadastroTobancos"
             app:destination="@id/fragmentBancos"
             app:popUpTo="@id/fragmentCadastro"
+            app:popUpToInclusive="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/fragmentbancoAberto"
+        android:name="com.example.meucontrolefinaceiro.ui.bancoAberto.FragmentbancoAberto"
+        android:label="fragment_fragmentbanco_aberto"
+        tools:layout="@layout/fragment_fragmentbanco_aberto" >
+        <action
+            android:id="@+id/bancoAbertoToBancosList"
+            app:destination="@id/fragmentBancos"
+            app:popUpTo="@id/fragmentBancos"
             app:popUpToInclusive="true" />
     </fragment>
 </navigation>

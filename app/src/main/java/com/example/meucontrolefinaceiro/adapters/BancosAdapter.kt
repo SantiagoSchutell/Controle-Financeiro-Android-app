@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -13,17 +14,22 @@ import com.example.meucontrolefinaceiro.Data.model.Bancos
 import com.example.meucontrolefinaceiro.R
 
 
-class BancosAdapter: ListAdapter<Bancos, BancosAdapter.BancosViewHolder>(DiffCallback()){
+class BancosAdapter(private val onClick: (Bancos) -> Unit): ListAdapter<Bancos, BancosAdapter.BancosViewHolder>(DiffCallback()){
 
     class BancosViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){
         private val bancoNome: TextView = itemView.findViewById(R.id.textNomebanco)
         private val bancoTipo: TextView = itemView.findViewById(R.id.textTipoConta)
         private val bancoLogo: ImageView = itemView.findViewById(R.id.bancoLogo)
 
-        fun bind(item: Bancos){
+        private val itemBanco: ConstraintLayout = itemView.findViewById(R.id.itemBanco)
+
+        fun bind(item: Bancos, onClick: (Bancos) -> Unit){
                 bancoNome.text = item.bancoNome
                 bancoTipo.text = item.tipoConta
                 bancoLogo.load(item.uriBanco)
+                itemBanco.setOnClickListener {
+                    onClick(item)
+            }
         }
     }
 
@@ -34,7 +40,7 @@ class BancosAdapter: ListAdapter<Bancos, BancosAdapter.BancosViewHolder>(DiffCal
 
     override fun onBindViewHolder(holder: BancosViewHolder, position: Int) {
         val item = getItem(position)
-        holder.bind(item)
+        holder.bind(item, onClick)
     }
 
     class DiffCallback : DiffUtil.ItemCallback<Bancos>(){
