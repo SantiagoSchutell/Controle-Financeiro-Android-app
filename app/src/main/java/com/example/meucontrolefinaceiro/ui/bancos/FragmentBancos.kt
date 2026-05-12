@@ -12,8 +12,10 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import coil.load
 import com.example.meucontrolefinaceiro.R
+import com.example.meucontrolefinaceiro.adapters.BancosAdapter
 import com.example.meucontrolefinaceiro.databinding.FragmentBancosBinding
 import com.example.meucontrolefinaceiro.utils.ExtrasFunc
 import com.google.android.material.snackbar.Snackbar
@@ -26,6 +28,8 @@ class FragmentBancos : Fragment() {
     }
 
     private val viewModel: BancosViewModel by viewModels()
+
+    private val  adapterBancos = BancosAdapter()
 
     private var idUsuario: String? = null
 
@@ -54,13 +58,14 @@ class FragmentBancos : Fragment() {
             }
         }
 
-
         if (ExtrasFunc().verificarLogin()) {
             idUsuario = FirebaseAuth.getInstance().currentUser?.uid
         } else {
             findNavController().navigate(R.id.action_fragmentBancos_to_loginFragment2)
         }
 
+
+        viewModel.obterDados(idUsuario!!)
 
         viewModel.erroNome.observe(viewLifecycleOwner) { resId ->
             binding.editTextNomeConta.error = resId?.let { getString(it) }
@@ -101,6 +106,14 @@ class FragmentBancos : Fragment() {
             }
         }
 
+        viewModel.contasList.observe(viewLifecycleOwner){list->
+            adapterBancos.submitList(list)
+        }
+
+        binding.recyclerView.apply {
+            adapter = adapterBancos
+            layoutManager = LinearLayoutManager(requireContext())
+        }
 
         binding.fabAddConta.setOnClickListener {
             binding.AddConta.visibility = View.VISIBLE
@@ -138,5 +151,6 @@ class FragmentBancos : Fragment() {
                 PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
             )
         }
+
     }
 }

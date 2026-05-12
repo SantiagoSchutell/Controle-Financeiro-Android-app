@@ -4,9 +4,11 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.meucontrolefinaceiro.Data.model.Bancos
 import com.example.meucontrolefinaceiro.R
 import com.example.meucontrolefinaceiro.utils.constantes
 import com.google.firebase.firestore.FirebaseFirestore
@@ -26,6 +28,9 @@ class BancosViewModel : ViewModel() {
 
     private val _loading = MutableLiveData<Boolean?>()
     val loading: LiveData<Boolean?> = _loading
+
+    private val _contasList = MutableLiveData<List<Bancos>>()
+    val contasList: LiveData<List<Bancos>> = _contasList
 
 
 
@@ -126,5 +131,32 @@ class BancosViewModel : ViewModel() {
               _salvarStatus.value = "erro"
 
           }
+    }
+
+    fun obterDados(idUsuario: String){
+        Log.i("TesteFluxo", "ViewModel: Função obterDados iniciada com ID: $idUsuario")
+        val ref = FirebaseFirestore.getInstance().collection("usuario")
+            .document(idUsuario).collection("Contas")
+        Log.i("TesteFluxo", "ViewModel: Referência do Firestore criada. Adicionando listener...")
+
+            ref.addSnapshotListener { value, error ->
+                if (error != null) {
+                    Log.e("ErroObterLista", "Falha ao ouvir alterações do Firestore: ${error.message}", error)
+                    return@addSnapshotListener
+                }
+
+
+                val list = value?.mapNotNull { doc->
+                    Log.i("TesteFluxo", "Dados: ${doc.getString("nomeConta")?: "Erro"}")
+
+                    Bancos(doc.id,
+                        doc.getString("nomeConta")?: "Erro",
+                        doc.getString("tipoConta")?: "Erro",
+                        doc.getString("uri")?: "null"
+                    )
+                }?: emptyList()
+
+                _contasList.value = list
+            }
     }
 }
