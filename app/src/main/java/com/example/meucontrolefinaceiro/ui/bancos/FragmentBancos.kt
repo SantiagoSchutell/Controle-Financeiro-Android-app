@@ -14,6 +14,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import coil.load
+import com.example.meucontrolefinaceiro.Data.model.Bancos
 import com.example.meucontrolefinaceiro.R
 import com.example.meucontrolefinaceiro.adapters.BancosAdapter
 import com.example.meucontrolefinaceiro.databinding.FragmentBancosBinding
@@ -29,10 +30,7 @@ class FragmentBancos : Fragment() {
 
     private val viewModel: BancosViewModel by viewModels()
 
-    private val  adapterBancos = BancosAdapter(){click->
-
-        findNavController().navigate(R.id.action_fragmentBancos_to_loginFragment2)
-    }
+    private val  adapterBancos = BancosAdapter(){click-> abrirBanco(click)}
 
     private var idUsuario: String? = null
 
@@ -60,6 +58,8 @@ class FragmentBancos : Fragment() {
                 uriImagem = null
             }
         }
+
+
 
         if (ExtrasFunc().verificarLogin()) {
             idUsuario = FirebaseAuth.getInstance().currentUser?.uid
@@ -155,5 +155,10 @@ class FragmentBancos : Fragment() {
             )
         }
 
+    }
+
+    fun abrirBanco(click: Bancos){
+        val action = FragmentBancosDirections.bancosToBancoAberto(click.bancoId)
+        findNavController().navigate(action)
     }
 }

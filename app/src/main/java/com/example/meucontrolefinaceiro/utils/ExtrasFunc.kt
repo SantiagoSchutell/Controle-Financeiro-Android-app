@@ -1,5 +1,6 @@
 package com.example.meucontrolefinaceiro.utils
 
+import android.view.View
 import com.google.firebase.auth.FirebaseAuth
 
 class ExtrasFunc {
@@ -22,5 +23,7 @@ class ExtrasFunc {
             return userId.toString()
         }
     }
+
+    fun Boolean.toVisibility(): Int = if (this) View.VISIBLE else View.GONE
 
 }

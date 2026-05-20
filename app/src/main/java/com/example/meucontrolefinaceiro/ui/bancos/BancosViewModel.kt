@@ -4,7 +4,6 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -60,7 +59,10 @@ class BancosViewModel : ViewModel() {
         val dadosDaConta = mapOf(
             "nomeConta" to nomeConta,
             "tipoConta" to tipoDeConta,
-            "uri" to uri
+            "uri" to uri,
+            "saldo" to 0,
+            "debito" to 0,
+            "saldoLiq" to 0
         )
 
 
@@ -134,20 +136,16 @@ class BancosViewModel : ViewModel() {
     }
 
     fun obterDados(idUsuario: String){
-        Log.i("TesteFluxo", "ViewModel: Função obterDados iniciada com ID: $idUsuario")
         val ref = FirebaseFirestore.getInstance().collection("usuario")
             .document(idUsuario).collection("Contas")
-        Log.i("TesteFluxo", "ViewModel: Referência do Firestore criada. Adicionando listener...")
 
             ref.addSnapshotListener { value, error ->
                 if (error != null) {
-                    Log.e("ErroObterLista", "Falha ao ouvir alterações do Firestore: ${error.message}", error)
                     return@addSnapshotListener
                 }
 
 
                 val list = value?.mapNotNull { doc->
-                    Log.i("TesteFluxo", "Dados: ${doc.getString("nomeConta")?: "Erro"}")
 
                     Bancos(doc.id,
                         doc.getString("nomeConta")?: "Erro",

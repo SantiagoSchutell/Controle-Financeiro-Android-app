@@ -57,5 +57,8 @@
             app:destination="@id/fragmentBancos"
             app:popUpTo="@id/fragmentBancos"
             app:popUpToInclusive="true" />
+        <argument android:name="idBanco"
+            app:argType="string"
+            app:nullable="true" />
     </fragment>
 </navigation>
