@@ -59,6 +59,8 @@
     <string name="login_failed_nome">Você precisa digitar seu nome.</string>
     <string name="login_failed_email">Você precisa digitar seu email.</string>
     <string name="login_failed_password">Você precisa digitar sua senha.</string>
+    <string name="errorValor">Digite um valor.</string>
+    <string name="errorIdConta">Conta bancária inválida.</string>
 
     <!-- Cadastro -->
     <string name="cadastro_title">Crie sua conta</string>

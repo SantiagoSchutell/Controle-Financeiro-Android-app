@@ -83,12 +83,14 @@
                 app:layout_constraintTop_toBottomOf="@id/textSaldoLiq" />
 
             <LinearLayout
+                android:id="@+id/linearLayout2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:baselineAligned="false"
                 android:orientation="horizontal"
-                app:layout_constraintTop_toBottomOf="@id/cardDivider">
+                app:layout_constraintTop_toBottomOf="@id/cardDivider"
+                tools:layout_editor_absoluteX="24dp">
 
                 <LinearLayout
                     android:layout_width="0dp"
@@ -114,7 +116,33 @@
                         android:textColor="@color/azul"
                         android:textSize="18sp"
                         android:textStyle="bold" />
+
+                    <EditText
+                        android:id="@+id/editSaldo"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp"
+                        android:ems="10"
+                        android:hint="@string/valor"
+                        android:inputType="number"
+                        android:visibility="gone"
+                        tools:visibility="visible" />
+
                 </LinearLayout>
+
+                <ImageButton
+                    android:id="@+id/btnConfirmarSaldo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:src="?android:attr/textCheckMark"
+                    android:visibility="gone"
+                    tools:visibility="visible" />
+
+                <ImageButton
+                    android:id="@+id/btnEditSaldo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@android:drawable/ic_menu_edit" />
 
                 <LinearLayout
                     android:layout_width="0dp"
@@ -142,7 +170,9 @@
                         android:textSize="18sp"
                         android:textStyle="bold" />
                 </LinearLayout>
+
             </LinearLayout>
+
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.card.MaterialCardView>
 

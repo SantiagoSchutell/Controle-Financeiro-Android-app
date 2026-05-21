@@ -1,11 +1,14 @@
 package com.example.meucontrolefinaceiro.ui.bancoAberto
 
 import android.util.Log
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.meucontrolefinaceiro.R
 import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 
@@ -18,16 +21,51 @@ class bancoAbertoViewModel : ViewModel() {
     var saldoLiq: Double = 0.0
     var debito: Double = 0.0
 
+
+    data class DadosDaConta(
+        val nomeConta: String,
+        val tipoConta: String,
+        val saldo: Double,
+        val saldoLiq: Double,
+        val debito: Double
+    )
+
     private val _addTrazacaoStatus = MutableLiveData<Int?>()
     val addTrazacaoStatus = _addTrazacaoStatus
 
     private val _loading = MutableLiveData<Boolean>()
-    val loading = _loading
+    val loading: LiveData<Boolean> = _loading
 
-    fun buscarDados(idUser: String, idConta: String, tipo: String, valor: Double) {
-        viewModelScope.launch {
-            carregarDados(idUser, idConta, tipo, valor)
+    private val _errorValorAddTrz = MutableStateFlow<Int?>(null)
+    val erroValorAddTrz: StateFlow<Int?> = _errorValorAddTrz
+
+    private val _errorValorEdit = MutableLiveData<Int?>(null)
+    val erroValorEdit: LiveData<Int?> = _errorValorEdit
+
+
+    private val _dadosBanco = MutableLiveData<DadosDaConta>()
+    val dadosBanco: LiveData<DadosDaConta> = _dadosBanco
+
+
+    fun buscarDados(idUser: String, idConta: String?, tipo: String, valor: String) {
+        _errorValorAddTrz.value = null
+
+        if (valor.isBlank()) {
+            _errorValorAddTrz.value = R.string.errorValor
+            return
         }
+
+        if (idConta == null) {
+            _errorValorAddTrz.value = R.string.errorIdConta
+            return
+        }
+
+
+        val valorEmNum = valor.toDoubleOrNull()!!
+        viewModelScope.launch {
+            carregarDados(idUser, idConta, tipo, valorEmNum)
+        }
+
     }
 
     suspend fun carregarDados(idUser: String, idConta: String, tipo: String, valor: Double) {
@@ -81,6 +119,8 @@ class bancoAbertoViewModel : ViewModel() {
                 .addOnSuccessListener {
                     _loading.value = false
                     _addTrazacaoStatus.value = R.string.addTraz_Sucess
+                    atualizarDados(idUser, idConta)
+
                 }
                 .addOnFailureListener { error ->
                     _loading.value = false
@@ -98,6 +138,8 @@ class bancoAbertoViewModel : ViewModel() {
                 .addOnSuccessListener {
                     _loading.value = false
                     _addTrazacaoStatus.value = R.string.addTraz_Sucess
+                    atualizarDados(idUser, idConta)
+
                 }
                 .addOnFailureListener { error ->
                     _loading.value = false
@@ -106,4 +148,59 @@ class bancoAbertoViewModel : ViewModel() {
 
         }
     }
+
+    fun editarSaldo(idUser: String, idConta: String?, valor: String) {
+        _errorValorEdit.value = null
+        _loading.value = true
+
+        if (valor.isBlank()) {
+            _errorValorEdit.value = R.string.errorValor
+            _loading.value = false
+            return
+        }
+
+        val valorEmDouble = valor.toDoubleOrNull()
+
+        viewModelScope.launch {
+            val ref = FirebaseFirestore.getInstance()
+                .collection("usuario")
+                .document(idUser)
+                .collection("Contas")
+                .document(idConta!!)
+            ref.update("saldo", valorEmDouble)
+                .addOnSuccessListener {
+                    _loading.value = false
+                    atualizarDados(idUser, idConta)
+
+                }
+                .addOnFailureListener {
+                    _loading.value = false
+                }
+        }
+    }
+
+    fun atualizarDados(idUser: String, idConta: String) {
+        val ref = FirebaseFirestore.getInstance().collection("usuario")
+            .document(idUser).collection("Contas").document(idConta)
+
+        ref.get()
+            .addOnSuccessListener { snapshot ->
+                val saldoAtual = snapshot.getDouble("saldo")!!
+                val debitoAtual = snapshot.getDouble("debito")!!
+                val newLiquido = saldoAtual - debitoAtual
+                val dados = DadosDaConta(
+                    nomeConta = snapshot.getString("nomeConta").toString(),
+                    tipoConta = snapshot.getString("tipoConta").toString(),
+                    saldo = snapshot.getDouble("saldo")!!,
+                    saldoLiq = newLiquido,
+                    debito = snapshot.getDouble("debito")!!
+                )
+                _dadosBanco.postValue(dados)
+            }
+
+
+    }
+
 }
+
+
