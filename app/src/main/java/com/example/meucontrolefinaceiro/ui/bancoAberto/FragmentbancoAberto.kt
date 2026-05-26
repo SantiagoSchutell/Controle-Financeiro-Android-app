@@ -41,8 +41,6 @@ class FragmentbancoAberto : Fragment() {
         val idusuario = FirebaseAuth.getInstance().currentUser!!.uid
         viewModel.atualizarDados(idusuario, idBanco!!)
 
-
-
         viewModel.loading.observe(viewLifecycleOwner) { status ->
             binding.progressBarBancoAberto.visibility = if (status) View.VISIBLE else View.GONE
         }
@@ -64,9 +62,9 @@ class FragmentbancoAberto : Fragment() {
         //atualizar Tela
         viewModel.dadosBanco.observe(viewLifecycleOwner){dados->
             binding.textNomeConta.text = dados.nomeConta
-            binding.textSaldoDisponivel.text = dados.saldo.toString()
-            binding.textDebitos.text = dados.debito.toString()
-            binding.textSaldoLiq.text = dados.saldoLiq.toString()
+            binding.textSaldoDisponivel.text = dados.saldo
+            binding.textDebitos.text = dados.debito
+            binding.textSaldoLiq.text = dados.saldoLiq
 
         }
 

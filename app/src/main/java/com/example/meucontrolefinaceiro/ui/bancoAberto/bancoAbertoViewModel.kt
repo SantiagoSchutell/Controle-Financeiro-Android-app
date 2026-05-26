@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.meucontrolefinaceiro.R
+import com.example.meucontrolefinaceiro.services.dobleToReal
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -25,9 +26,9 @@ class bancoAbertoViewModel : ViewModel() {
     data class DadosDaConta(
         val nomeConta: String,
         val tipoConta: String,
-        val saldo: Double,
-        val saldoLiq: Double,
-        val debito: Double
+        val saldo: String,
+        val saldoLiq: String,
+        val debito: String
     )
 
     private val _addTrazacaoStatus = MutableLiveData<Int?>()
@@ -188,12 +189,23 @@ class bancoAbertoViewModel : ViewModel() {
                 val saldoAtual = snapshot.getDouble("saldo")!!
                 val debitoAtual = snapshot.getDouble("debito")!!
                 val newLiquido = saldoAtual - debitoAtual
+               val nomeConta = snapshot.getString("nomeConta").toString()
+                val tipoConta = snapshot.getString("tipoConta").toString()
+                val saldo = snapshot.getDouble("saldo")!!
+                val saldoLiq = newLiquido
+                val debito = snapshot.getDouble("debito")!!
+
+
+                val formatSaldo = dobleToReal(saldo)
+                val formatsaldoLiq = dobleToReal(saldoLiq)
+                val formatdebito = dobleToReal(debito)
+
                 val dados = DadosDaConta(
-                    nomeConta = snapshot.getString("nomeConta").toString(),
-                    tipoConta = snapshot.getString("tipoConta").toString(),
-                    saldo = snapshot.getDouble("saldo")!!,
-                    saldoLiq = newLiquido,
-                    debito = snapshot.getDouble("debito")!!
+                    nomeConta = nomeConta,
+                    tipoConta = tipoConta,
+                    saldo = formatSaldo,
+                    saldoLiq = formatsaldoLiq,
+                    debito = formatdebito
                 )
                 _dadosBanco.postValue(dados)
             }
