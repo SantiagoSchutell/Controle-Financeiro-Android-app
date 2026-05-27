@@ -59,8 +59,6 @@
     <string name="login_failed_nome">Você precisa digitar seu nome.</string>
     <string name="login_failed_email">Você precisa digitar seu email.</string>
     <string name="login_failed_password">Você precisa digitar sua senha.</string>
-    <string name="errorValor">Digite um valor.</string>
-    <string name="errorIdConta">Conta bancária inválida.</string>
 
     <!-- Cadastro -->
     <string name="cadastro_title">Crie sua conta</string>
@@ -76,8 +74,17 @@
     <string name="debito">Débito</string>
     <string name="credito">Crédito</string>
 
-    <!-- Status de Transação (O que estava faltando no ViewModel) -->
+    <!-- Status de Transação -->
     <string name="addTraz_Sucess">Adicionado com sucesso!</string>
     <string name="addTraz_failed">Valor inválido!</string>
     <string name="addTraz_failed2">Erro ao adicionar tranzação, favor tente novamente.</string>
+
+    <!-- Corretora -->
+    <string name="corretora_title">Minha Corretora</string>
+    <string name="corretora_total_investido">Total Investido</string>
+    <string name="corretora_meus_investimentos">Meus Investimentos</string>
+    <string name="corretora_add_novo">Novo Ativo</string>
+    <string name="corretora_hint_nome">Nome do Ativo (Ex: PETR4, CDB...)</string>
+    <string name="corretora_btn_confirmar">Confirmar</string>
+    <string name="corretora_label_valor">Valor Atual R$</string>
 </resources>
