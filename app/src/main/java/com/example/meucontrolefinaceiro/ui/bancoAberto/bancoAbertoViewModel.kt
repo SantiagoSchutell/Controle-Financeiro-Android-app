@@ -6,7 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.meucontrolefinaceiro.R
-import com.example.meucontrolefinaceiro.services.dobleToReal
+import com.example.meucontrolefinaceiro.utils.dobleToReal
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -52,12 +52,12 @@ class bancoAbertoViewModel : ViewModel() {
         _errorValorAddTrz.value = null
 
         if (valor.isBlank()) {
-            _errorValorAddTrz.value = R.string.errorValor
+            _errorValorAddTrz.value = R.string.addTraz_failed
             return
         }
 
         if (idConta == null) {
-            _errorValorAddTrz.value = R.string.errorIdConta
+            _errorValorAddTrz.value = R.string.addTraz_failed
             return
         }
 
@@ -155,7 +155,7 @@ class bancoAbertoViewModel : ViewModel() {
         _loading.value = true
 
         if (valor.isBlank()) {
-            _errorValorEdit.value = R.string.errorValor
+            _errorValorEdit.value = R.string.addTraz_failed
             _loading.value = false
             return
         }

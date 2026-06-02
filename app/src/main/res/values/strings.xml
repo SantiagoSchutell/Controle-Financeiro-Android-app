@@ -76,7 +76,7 @@
 
     <!-- Status de Transação -->
     <string name="addTraz_Sucess">Adicionado com sucesso!</string>
-    <string name="addTraz_failed">Valor inválido!</string>
+        <string name="addTraz_failed">Valor inválido!</string>
     <string name="addTraz_failed2">Erro ao adicionar tranzação, favor tente novamente.</string>
 
     <!-- Corretora -->
@@ -87,4 +87,9 @@
     <string name="corretora_hint_nome">Nome do Ativo (Ex: PETR4, CDB...)</string>
     <string name="corretora_btn_confirmar">Confirmar</string>
     <string name="corretora_label_valor">Valor Atual R$</string>
+    <string name="valorNull">Você precisa digitar um valor</string>
+    <string name="valorIdUser">Erro ao procurar usuario</string>
+    <string name="valorIdConta">Erro ao procurar conta</string>
+    <string name="valorErroA">Erro ao salvar este ativo</string>
+    <string name="BuscarErro">Erro ao carregar suas contas</string>
 </resources>

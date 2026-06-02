@@ -69,7 +69,7 @@ class BancosViewModel : ViewModel() {
         FirebaseFirestore.getInstance()
             .collection(constantes.USER)
             .document(idUser)
-            .collection("Contas")
+            .collection(constantes.CONTAS)
             .document()
             .set(dadosDaConta)
             .addOnSuccessListener {
