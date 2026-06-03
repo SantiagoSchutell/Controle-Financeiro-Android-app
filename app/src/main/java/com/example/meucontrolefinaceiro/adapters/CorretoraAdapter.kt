@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.meucontrolefinaceiro.Data.model.Corretora
 import com.example.meucontrolefinaceiro.R
 
-class CorretoraAdapter(private var onClick:(Corretora)-> Unit): ListAdapter<Corretora, CorretoraAdapter.CorretoraViewHolder>(DiffCallback()) {
+class CorretoraAdapter(private var onClick:(Corretora)-> Unit, private var onLongClique: (Corretora)-> Unit): ListAdapter<Corretora, CorretoraAdapter.CorretoraViewHolder>(DiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CorretoraViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_ativo, parent, false)
@@ -19,7 +19,7 @@ class CorretoraAdapter(private var onClick:(Corretora)-> Unit): ListAdapter<Corr
     }
     override fun onBindViewHolder(holder: CorretoraViewHolder, position: Int) {
         val item = getItem(position)
-        holder.bind(item, onClick)
+        holder.bind(item, onClick, onLongClique)
     }
 
     class CorretoraViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){
@@ -29,12 +29,17 @@ class CorretoraAdapter(private var onClick:(Corretora)-> Unit): ListAdapter<Corr
 
         private val ativoClicado: ConstraintLayout = itemView.findViewById(R.id.ativoClicado)
 
-        fun bind(item: Corretora, onClick: (Corretora) -> Unit){
+        fun bind(item: Corretora, onClick: (Corretora) -> Unit, onLongClique: (Corretora)-> Unit){
             ativoNome.text = item.ativoNome
             ativoSaldo.text = item.valor
 
             ativoClicado.setOnClickListener {
                 onClick(item)
+            }
+
+            ativoClicado.setOnLongClickListener {
+                onLongClique(item)
+                true
             }
         }
     }

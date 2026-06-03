@@ -5,11 +5,16 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.meucontrolefinaceiro.Data.model.Corretora
 import com.example.meucontrolefinaceiro.R
+import com.example.meucontrolefinaceiro.services.AuthRepositoryImp
 import com.example.meucontrolefinaceiro.utils.constantes
 import com.example.meucontrolefinaceiro.utils.dobleToReal
 import com.google.firebase.firestore.FirebaseFirestore
+import dagger.hilt.android.lifecycle.HiltViewModel
+import jakarta.inject.Inject
 
-class CorretoraViewModel: ViewModel() {
+@HiltViewModel
+class CorretoraViewModel@Inject constructor(private val authRepository: AuthRepositoryImp): ViewModel() {
+    private val idUsuario: String? = authRepository.getUserId()
     private val _erroSalvar = MutableLiveData<Int?>()
     val erroSalvar: LiveData<Int?> = _erroSalvar
 
@@ -22,10 +27,46 @@ class CorretoraViewModel: ViewModel() {
     private val _listaAtivos = MutableLiveData<List<Corretora>>()
     val listaAtivos: LiveData<List<Corretora>> = _listaAtivos
 
+    private val _erroApagar = MutableLiveData<Int?>()
+    val erroApagar: LiveData<Int?> = _erroApagar
 
-    ///Implementar a Função de APAGAR e Abrir pra editar o valor
 
-    fun salvarNovoAtivo(idUsuario: String, idConta: String, nomeAtivo: String){
+
+    ///Implementar função de Abrir pra editar o valor
+
+    fun apagarAtivo(idConta: String?, idAtivo: String?){
+        if (idUsuario==null){
+            _loading.value = false
+            return
+        }
+        if (idConta==null){
+            _loading.value = false
+            return
+        }
+        if (idAtivo==null){
+            _loading.value = false
+            return
+        }
+        _loading.value = true
+        val ref = FirebaseFirestore. getInstance()
+            .collection(constantes.USER)
+            .document(idUsuario)
+            .collection(constantes.CONTAS)
+            .document(idConta)
+            .collection(idConta)
+            .document(idAtivo)
+
+        ref.delete()
+            .addOnSuccessListener {
+                _loading.value = false
+            }
+            .addOnFailureListener {
+                _loading.value = false
+                _erroApagar.value = R.string.ApagarErro
+            }
+
+    }
+    fun salvarNovoAtivo(idConta: String?, nomeAtivo: String?){
         _loading.value = true
 
         if (nomeAtivo.isNullOrEmpty()){
@@ -71,7 +112,7 @@ class CorretoraViewModel: ViewModel() {
                 _erroSalvar.value = R.string.valorErroA
             }
     }
-    fun carregarAtivo(idUsuario: String, idConta: String){
+    fun carregarAtivo(idConta: String?){
         if (idUsuario.isNullOrEmpty()){
             _errocarregar.value = R.string.valorIdUser
             _loading.value = false

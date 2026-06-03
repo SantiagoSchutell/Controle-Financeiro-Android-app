@@ -2,6 +2,13 @@
     <string name="app_name">Resumo Financeriro</string>
     <string name="app_titulo_caixa">Resumo</string>
 
+
+    <string name="sim">Sim</string>
+    <string name="nao">Não</string>
+    <string name="confirmar">Confirmar</string>
+    <string name="cancelar">Cancelar</string>
+    <string name="apagar">Apagar</string>
+
     <!-- Saldos e Contas -->
     <string name="app_total">Valor Total</string>
     <string name="app_investidoSaldo">Investido</string>
@@ -27,6 +34,8 @@
     <string name="radioContaCorrente">Conta Corrente</string>
     <string name="radioInvestimentos">Investimentos</string>
     <string name="botaoAdicnionartext">Adicionar Conta</string>
+    <string name="apagarContaMesnsagem">Você realmente deseja apagar está conta? Você não podera recuperar novamente</string>
+    <string name="apagarAtivoMesnsagem">Você realmente deseja apagar este Ativo? Você não podera recuperar novamente</string>
 
     <!-- Erros de Adição -->
     <string name="add_error_name">Você precisa dar um nome para essa conta.</string>
@@ -92,4 +101,5 @@
     <string name="valorIdConta">Erro ao procurar conta</string>
     <string name="valorErroA">Erro ao salvar este ativo</string>
     <string name="BuscarErro">Erro ao carregar suas contas</string>
+    <string name="ApagarErro">Erro ao apagar esta conta</string>
 </resources>

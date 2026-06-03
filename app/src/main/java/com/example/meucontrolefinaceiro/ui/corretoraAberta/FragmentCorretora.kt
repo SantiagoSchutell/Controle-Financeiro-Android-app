@@ -7,19 +7,18 @@ import android.view.View.VISIBLE
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.meucontrolefinaceiro.R
 import com.example.meucontrolefinaceiro.adapters.CorretoraAdapter
 import com.example.meucontrolefinaceiro.databinding.FragmentCorretoraBinding
+import com.example.meucontrolefinaceiro.utils.exibirDialog
 import com.google.android.material.snackbar.Snackbar
-import com.google.firebase.auth.FirebaseAuth
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class FragmentCorretora : Fragment() {
     private val args: FragmentCorretoraArgs by navArgs()
-
-    private val corretoraAdapter = CorretoraAdapter(onClick = {cloque-> })
     private val ViewModel: CorretoraViewModel by viewModels()
     private val binding by lazy {
         FragmentCorretoraBinding.inflate(layoutInflater)
@@ -27,17 +26,22 @@ class FragmentCorretora : Fragment() {
 
     private var idBanco: String? = null
 
+    private val corretoraAdapter = CorretoraAdapter(
+        onClick = {clique-> },
+        onLongClique = {clique->
+            exibirDialog(requireContext(),
+                R.string.apagarAtivoMesnsagem) {status->
+                if (status){
+                    ViewModel.apagarAtivo(args.idBanco, clique.idAtivo)
+                }
+            } })
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val idUser = FirebaseAuth.getInstance().currentUser?.uid
-        if (idUser==null){
-            findNavController().navigate(R.id.action_fragmentCorretora_to_loginFragment2)
-            return
-        }
 
         ViewModel.listaAtivos.observe(viewLifecycleOwner){lista->
             corretoraAdapter.submitList(lista)
@@ -58,17 +62,16 @@ class FragmentCorretora : Fragment() {
         ViewModel.loading.observe(viewLifecycleOwner){status->
             binding.progressBar.visibility = if (status) VISIBLE else GONE
         }
+        idBanco = args.idBanco
 
-        if (args.idBanco!=null){
-            ViewModel.carregarAtivo(idUser, args.idBanco!!)
-            idBanco = args.idBanco
-        }
+        ViewModel.carregarAtivo( idBanco)
+
 
         binding.fabAddInvestimento.setOnClickListener {
             binding.cardAddInvestimento.visibility = VISIBLE
             binding.btnConfirmarInvestimento.setOnClickListener {
                 val ativoNome = binding.editTextNomeInvestimento.text.toString()
-                ViewModel.salvarNovoAtivo(idUser, idBanco!!, ativoNome )
+                ViewModel.salvarNovoAtivo(idBanco, ativoNome )
                 binding.cardAddInvestimento.visibility = GONE
             }
         }

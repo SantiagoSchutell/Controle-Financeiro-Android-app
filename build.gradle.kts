@@ -3,11 +3,13 @@ plugins {
     alias(libs.plugins.android.application) apply false
     alias(libs.plugins.kotlin.android) apply false
     id("com.google.gms.google-services") version "4.4.0" apply false
+    id("com.google.dagger.hilt.android") version "2.57.1" apply false
+    id("com.google.devtools.ksp") version "2.0.21-1.0.26" apply false
 }
 
 buildscript {
     dependencies {
-        val nav_version = "2.7.7" // ou a versão que você estiver usando
+        val nav_version = "2.7.7"
         classpath("androidx.navigation:navigation-safe-args-gradle-plugin:$nav_version")
     }
 }
