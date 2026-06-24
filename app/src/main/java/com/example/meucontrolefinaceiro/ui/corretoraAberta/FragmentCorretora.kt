@@ -27,7 +27,22 @@ class FragmentCorretora : Fragment() {
     private var idBanco: String? = null
 
     private val corretoraAdapter = CorretoraAdapter(
-        onClick = {clique-> },
+        onClick = {clique->
+            binding.cardEditarValorAtivo.visibility = VISIBLE
+            binding.btnConfirmarEdicao.setOnClickListener {
+                val valor = binding.editTextValorAtivo.text.toString().toDoubleOrNull()
+                if (valor!=null){
+                    ViewModel.editarAtivo(clique.idAtivo, idBanco, valor)
+                        binding.cardEditarValorAtivo.visibility = GONE
+
+                }else{
+                    binding.editTextValorAtivo.error = getString(R.string.editarNull)
+                }
+            }
+            binding.btnFecharEdicao.setOnClickListener {
+                binding.cardEditarValorAtivo.visibility = GONE
+            }
+        },
         onLongClique = {clique->
             exibirDialog(requireContext(),
                 R.string.apagarAtivoMesnsagem) {status->
@@ -43,6 +58,12 @@ class FragmentCorretora : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        ViewModel.editarStatus.observe(viewLifecycleOwner){status->
+            Snackbar.make(requireView(), status?.let{getString(it)}.toString(), Snackbar.LENGTH_LONG).show()
+        }
+        ViewModel.erroAbrirAtivo.observe(viewLifecycleOwner){status->
+            Snackbar.make(requireView(), status?.let{getString(it)}.toString(), Snackbar.LENGTH_LONG).show()
+        }
         ViewModel.listaAtivos.observe(viewLifecycleOwner){lista->
             corretoraAdapter.submitList(lista)
         }
@@ -65,7 +86,6 @@ class FragmentCorretora : Fragment() {
         idBanco = args.idBanco
 
         ViewModel.carregarAtivo( idBanco)
-
 
         binding.fabAddInvestimento.setOnClickListener {
             binding.cardAddInvestimento.visibility = VISIBLE

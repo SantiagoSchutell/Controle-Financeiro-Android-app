@@ -13,7 +13,8 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import jakarta.inject.Inject
 
 @HiltViewModel
-class CorretoraViewModel@Inject constructor(private val authRepository: AuthRepositoryImp): ViewModel() {
+class CorretoraViewModel @Inject constructor(private val authRepository: AuthRepositoryImp) :
+    ViewModel() {
     private val idUsuario: String? = authRepository.getUserId()
     private val _erroSalvar = MutableLiveData<Int?>()
     val erroSalvar: LiveData<Int?> = _erroSalvar
@@ -30,25 +31,61 @@ class CorretoraViewModel@Inject constructor(private val authRepository: AuthRepo
     private val _erroApagar = MutableLiveData<Int?>()
     val erroApagar: LiveData<Int?> = _erroApagar
 
+    private val _erroAbrirAtivo = MutableLiveData<Int>()
+    val erroAbrirAtivo: LiveData<Int> = _erroAbrirAtivo
+
+    private val _editarStatus = MutableLiveData<Int>()
+    val editarStatus: LiveData<Int> = _editarStatus
 
 
-    ///Implementar função de Abrir pra editar o valor
+    fun editarAtivo(idAtivo: String?, idConta: String?, newValor: Double) {
+        _loading.value = true
 
-    fun apagarAtivo(idConta: String?, idAtivo: String?){
-        if (idUsuario==null){
+        if (idAtivo != null && idConta != null) {
+            val ref = FirebaseFirestore.getInstance()
+                .collection(constantes.USER)
+                .document(idUsuario!!)
+                .collection(constantes.CONTAS)
+                .document(idConta)
+                .collection(idConta)
+                .document(idAtivo)
+
+            ref.get().addOnSuccessListener { snapshots ->
+                val valores = mapOf(
+                    "saldo" to newValor
+                )
+
+                ref.update(valores).addOnSuccessListener {
+                    _editarStatus.value = R.string.editarSucess
+                    _loading.value = false
+
+                }.addOnFailureListener { error->
+                    _erroAbrirAtivo.value = R.string.editarErro2
+                    _loading.value = false
+
+                }
+            }
+        } else {
+            _erroAbrirAtivo.value = R.string.editarErro
+            _loading.value = false
+        }
+    }
+
+    fun apagarAtivo(idConta: String?, idAtivo: String?) {
+        if (idUsuario == null) {
             _loading.value = false
             return
         }
-        if (idConta==null){
+        if (idConta == null) {
             _loading.value = false
             return
         }
-        if (idAtivo==null){
+        if (idAtivo == null) {
             _loading.value = false
             return
         }
         _loading.value = true
-        val ref = FirebaseFirestore. getInstance()
+        val ref = FirebaseFirestore.getInstance()
             .collection(constantes.USER)
             .document(idUsuario)
             .collection(constantes.CONTAS)
@@ -66,20 +103,21 @@ class CorretoraViewModel@Inject constructor(private val authRepository: AuthRepo
             }
 
     }
-    fun salvarNovoAtivo(idConta: String?, nomeAtivo: String?){
+
+    fun salvarNovoAtivo(idConta: String?, nomeAtivo: String?) {
         _loading.value = true
 
-        if (nomeAtivo.isNullOrEmpty()){
+        if (nomeAtivo.isNullOrEmpty()) {
             _loading.value = false
             _erroSalvar.value = R.string.valorNull
             return
         }
-        if (idUsuario.isNullOrEmpty()){
+        if (idUsuario.isNullOrEmpty()) {
             _loading.value = false
             _erroSalvar.value = R.string.valorIdUser
             return
         }
-        if (idConta.isNullOrEmpty()){
+        if (idConta.isNullOrEmpty()) {
             _loading.value = false
             _erroSalvar.value = R.string.valorIdConta
             return
@@ -98,13 +136,14 @@ class CorretoraViewModel@Inject constructor(private val authRepository: AuthRepo
 
         val data = mapOf(
             "idOperacao" to idConta,
-            "idAtivo" to  idGerado,
+            "idAtivo" to idGerado,
             "AtivoNome" to nomeAtivo,
-            "saldo" to 0)
+            "saldo" to 0
+        )
 
 
         novoDocRef.set(data)
-            .addOnSuccessListener {doc->
+            .addOnSuccessListener { doc ->
                 _loading.value = false
             }
             .addOnFailureListener {
@@ -112,13 +151,14 @@ class CorretoraViewModel@Inject constructor(private val authRepository: AuthRepo
                 _erroSalvar.value = R.string.valorErroA
             }
     }
-    fun carregarAtivo(idConta: String?){
-        if (idUsuario.isNullOrEmpty()){
+
+    fun carregarAtivo(idConta: String?) {
+        if (idUsuario.isNullOrEmpty()) {
             _errocarregar.value = R.string.valorIdUser
             _loading.value = false
             return
         }
-        if (idConta.isNullOrEmpty()){
+        if (idConta.isNullOrEmpty()) {
             _errocarregar.value = R.string.valorIdConta
             _loading.value = false
             return
@@ -131,19 +171,24 @@ class CorretoraViewModel@Inject constructor(private val authRepository: AuthRepo
             .document(idConta)
             .collection(idConta)
 
-            ref.addSnapshotListener(){value, error ->
-                if (error!=null){
-                   _errocarregar.value = R.string.BuscarErro
-                    _loading.value = false
-                }
-
-                val lista = value?.mapNotNull { doc->
-                    Corretora(doc.getString("idAtivo")?:"null", dobleToReal(doc.getDouble("saldo")!!), doc.getString("AtivoNome")?:"null")
-                }?: emptyList()
-
-                _listaAtivos.value = lista
-
+        ref.addSnapshotListener() { value, error ->
+            if (error != null) {
+                _errocarregar.value = R.string.BuscarErro
+                _loading.value = false
             }
+
+            val lista = value?.mapNotNull { doc ->
+                Corretora(
+                    doc.getString("idAtivo") ?: "null",
+                    dobleToReal(doc.getDouble("saldo")!!),
+                    doc.getString("AtivoNome") ?: "null"
+
+                )
+            } ?: emptyList()
+
+            _listaAtivos.value = lista
+
+        }
 
     }
 }

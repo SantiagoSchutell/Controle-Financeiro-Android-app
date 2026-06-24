@@ -102,4 +102,8 @@
     <string name="valorErroA">Erro ao salvar este ativo</string>
     <string name="BuscarErro">Erro ao carregar suas contas</string>
     <string name="ApagarErro">Erro ao apagar esta conta</string>
+    <string name="editarErro">Erro ao acessar essa conta</string>
+    <string name="editarErro2">Erro editar, tente novamente</string>
+    <string name="editarSucess">Valor Editado com sucesso!</string>
+    <string name="editarNull">Você precisa digitar um valor!</string>
 </resources>
