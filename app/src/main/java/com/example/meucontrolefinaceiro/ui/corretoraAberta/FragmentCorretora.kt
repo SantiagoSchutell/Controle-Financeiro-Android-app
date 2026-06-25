@@ -34,6 +34,7 @@ class FragmentCorretora : Fragment() {
                 if (valor!=null){
                     ViewModel.editarAtivo(clique.idAtivo, idBanco, valor)
                         binding.cardEditarValorAtivo.visibility = GONE
+                    ViewModel.carregarAtivo( idBanco)
 
                 }else{
                     binding.editTextValorAtivo.error = getString(R.string.editarNull)
@@ -57,6 +58,8 @@ class FragmentCorretora : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        idBanco = args.idBanco
+        ViewModel.carregarAtivo( idBanco)
 
         ViewModel.editarStatus.observe(viewLifecycleOwner){status->
             Snackbar.make(requireView(), status?.let{getString(it)}.toString(), Snackbar.LENGTH_LONG).show()
@@ -71,6 +74,9 @@ class FragmentCorretora : Fragment() {
             adapter = corretoraAdapter
             layoutManager = LinearLayoutManager(requireContext())
         }
+        ViewModel.saldoTotal.observe(viewLifecycleOwner){saldo->
+            binding.textTotalInvestidoCorretora.text = saldo
+        }
 
         ViewModel.erroSalvar.observe(viewLifecycleOwner){error->
           Snackbar.make(requireView(), error?.let { getString(it) }.toString(), Snackbar.LENGTH_LONG).show()
@@ -83,9 +89,8 @@ class FragmentCorretora : Fragment() {
         ViewModel.loading.observe(viewLifecycleOwner){status->
             binding.progressBar.visibility = if (status) VISIBLE else GONE
         }
-        idBanco = args.idBanco
 
-        ViewModel.carregarAtivo( idBanco)
+
 
         binding.fabAddInvestimento.setOnClickListener {
             binding.cardAddInvestimento.visibility = VISIBLE

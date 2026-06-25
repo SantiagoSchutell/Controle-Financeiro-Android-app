@@ -36,6 +36,8 @@ class CorretoraViewModel @Inject constructor(private val authRepository: AuthRep
 
     private val _editarStatus = MutableLiveData<Int>()
     val editarStatus: LiveData<Int> = _editarStatus
+    private val _saldoTotal = MutableLiveData<String?>()
+    val saldoTotal: LiveData<String?> = _saldoTotal
 
 
     fun editarAtivo(idAtivo: String?, idConta: String?, newValor: Double) {
@@ -186,6 +188,11 @@ class CorretoraViewModel @Inject constructor(private val authRepository: AuthRep
                 )
             } ?: emptyList()
 
+            val somaTotal = value?.documents?.sumOf { doc ->
+                doc.getDouble("saldo") ?: 0.0
+            } ?: 0.0
+
+            _saldoTotal.value = dobleToReal(somaTotal)
             _listaAtivos.value = lista
 
         }
