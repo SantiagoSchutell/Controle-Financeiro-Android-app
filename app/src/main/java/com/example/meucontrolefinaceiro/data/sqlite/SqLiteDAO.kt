@@ -5,7 +5,7 @@ import com.example.meucontrolefinaceiro.utils.Constants
 
 class SqLiteDAO(private val dbHeloer: BancoDeDados ) {
 
-    fun SQLiteLer(idUser: String): List<String>{
+    fun SQLiteLer(): List<String>{
 
         val db = dbHeloer.readableDatabase
         val dadosSQLite = mutableListOf<String>()
@@ -39,9 +39,17 @@ class SqLiteDAO(private val dbHeloer: BancoDeDados ) {
         return true
     }
 
-    fun  SQLiteRemover(idUser: String){
+    fun atualizarDados(idUser: String, saldoTotalNovo: String, debitoTotalNovo: String): Int{
+        val valores = ContentValues().apply {
+            put("SaldoTotal", saldoTotalNovo)
+            put("debitoTotal", debitoTotalNovo)
+        }
         val db = dbHeloer.writableDatabase
-        db.delete(Constants.SQLite, null, null)
+        return db.update(Constants.SQLite, valores, "idUser = ?", arrayOf(idUser))
+    }
+
+    fun  SQLiteRemover(item: String){
+        //Não util no momento
     }
 
 }
