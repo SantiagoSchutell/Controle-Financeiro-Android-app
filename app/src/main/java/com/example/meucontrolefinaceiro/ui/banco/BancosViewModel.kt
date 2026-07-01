@@ -1,4 +1,4 @@
-package com.example.meucontrolefinaceiro.ui.bancos
+package com.example.meucontrolefinaceiro.ui.banco
 
 import android.content.Context
 import android.graphics.Bitmap
@@ -7,9 +7,9 @@ import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.meucontrolefinaceiro.Data.model.Bancos
+import com.example.meucontrolefinaceiro.data.model.Bancos
 import com.example.meucontrolefinaceiro.R
-import com.example.meucontrolefinaceiro.utils.constantes
+import com.example.meucontrolefinaceiro.utils.Constants
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import java.io.ByteArrayOutputStream
@@ -67,9 +67,9 @@ class BancosViewModel : ViewModel() {
 
 
         FirebaseFirestore.getInstance()
-            .collection(constantes.USER)
+            .collection(Constants.USER)
             .document(idUser)
-            .collection(constantes.CONTAS)
+            .collection(Constants.CONTAS)
             .document()
             .set(dadosDaConta)
             .addOnSuccessListener {
@@ -84,7 +84,7 @@ class BancosViewModel : ViewModel() {
     }
 
     fun salvarStorage(idUser: String, bytesComprimidos: ByteArray, nomebanco: String, tipoConta:String,  context: Context){
-        val storageRef = FirebaseStorage.getInstance().reference.child(idUser).child(constantes.IMAGENS).child(nomebanco)
+        val storageRef = FirebaseStorage.getInstance().reference.child(idUser).child(Constants.IMAGENS).child(nomebanco)
 
         storageRef.putBytes(bytesComprimidos)
 

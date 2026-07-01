@@ -18,9 +18,9 @@ import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.launch
 
 
-class FragmentbancoAberto : Fragment() {
+class BancoAbertoFragment : Fragment() {
     private val args: FragmentbancoAbertoArgs by navArgs()
-    private val viewModel: bancoAbertoViewModel by viewModels()
+    private val viewModel: BancoAbertoViewModel by viewModels()
 
     private val binding by lazy {
         FragmentFragmentbancoAbertoBinding.inflate(layoutInflater)

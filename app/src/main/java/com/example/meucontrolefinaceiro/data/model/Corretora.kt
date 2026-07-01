@@ -1,4 +1,4 @@
-package com.example.meucontrolefinaceiro.Data.model
+package com.example.meucontrolefinaceiro.data.model
 
 data class Corretora(
     val idAtivo: String,

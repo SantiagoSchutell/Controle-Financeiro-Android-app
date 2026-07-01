@@ -1,4 +1,4 @@
-package com.example.meucontrolefinaceiro.adapters
+package com.example.meucontrolefinaceiro.ui.corretoraAberta
 
 import android.view.LayoutInflater
 import android.view.View
@@ -8,8 +8,8 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.example.meucontrolefinaceiro.Data.model.Corretora
 import com.example.meucontrolefinaceiro.R
+import com.example.meucontrolefinaceiro.data.model.Corretora
 
 class CorretoraAdapter(private var onClick:(Corretora)-> Unit, private var onLongClique: (Corretora)-> Unit): ListAdapter<Corretora, CorretoraAdapter.CorretoraViewHolder>(DiffCallback()) {
 
@@ -56,4 +56,3 @@ class CorretoraAdapter(private var onClick:(Corretora)-> Unit, private var onLon
     }
 
 }
-

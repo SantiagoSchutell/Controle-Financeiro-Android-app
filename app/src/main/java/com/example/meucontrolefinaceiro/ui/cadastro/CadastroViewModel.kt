@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.meucontrolefinaceiro.R
-import com.example.meucontrolefinaceiro.utils.constantes
+import com.example.meucontrolefinaceiro.utils.Constants
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
@@ -82,7 +82,7 @@ class CadastroViewModel : ViewModel() {
         )
 
         FirebaseFirestore.getInstance()
-            .collection(constantes.USER)
+            .collection(Constants.USER)
             .document(idUser)
             .set(data, SetOptions.merge())
             .addOnSuccessListener {

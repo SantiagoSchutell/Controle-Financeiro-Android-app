@@ -14,7 +14,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 
 
-class bancoAbertoViewModel : ViewModel() {
+class BancoAbertoViewModel : ViewModel() {
 
     var nomeConta: String = ""
     var tipoConta: String = ""

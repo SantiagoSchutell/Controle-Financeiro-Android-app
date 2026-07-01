@@ -1,4 +1,4 @@
-package com.example.meucontrolefinaceiro.services
+package com.example.meucontrolefinaceiro.data.repository
 
 import com.google.firebase.auth.FirebaseAuth
 import jakarta.inject.Inject

@@ -1,4 +1,4 @@
-package com.example.meucontrolefinaceiro.adapters
+package com.example.meucontrolefinaceiro.ui.banco
 
 import android.view.LayoutInflater
 import android.view.View
@@ -10,9 +10,8 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
-import com.example.meucontrolefinaceiro.Data.model.Bancos
 import com.example.meucontrolefinaceiro.R
-
+import com.example.meucontrolefinaceiro.data.model.Bancos
 
 class BancosAdapter(private val onClick: (Bancos) -> Unit): ListAdapter<Bancos, BancosAdapter.BancosViewHolder>(DiffCallback()){
 

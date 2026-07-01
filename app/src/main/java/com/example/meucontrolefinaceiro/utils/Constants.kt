@@ -1,7 +1,9 @@
 package com.example.meucontrolefinaceiro.utils
 
-object constantes {
+object Constants {
     val USER = "usuario"
     val IMAGENS = "bancosLogo"
     val CONTAS = "Contas"
+
+    val SQLite = "FinanceData"
 }

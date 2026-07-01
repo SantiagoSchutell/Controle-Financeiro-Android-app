@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="#F5F7FA"
     android:visibility="visible"
-    tools:context=".ui.bancoAberto.FragmentbancoAberto">
+    tools:context=".ui.bancoAberto.BancoAbertoFragment">
 
     <!-- Header Decorativo -->
     <View

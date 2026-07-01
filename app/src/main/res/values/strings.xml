@@ -85,7 +85,7 @@
 
     <!-- Status de Transação -->
     <string name="addTraz_Sucess">Adicionado com sucesso!</string>
-        <string name="addTraz_failed">Valor inválido!</string>
+    <string name="addTraz_failed">Valor inválido!</string>
     <string name="addTraz_failed2">Erro ao adicionar tranzação, favor tente novamente.</string>
 
     <!-- Corretora -->
@@ -106,4 +106,10 @@
     <string name="editarErro2">Erro editar, tente novamente</string>
     <string name="editarSucess">Valor Editado com sucesso!</string>
     <string name="editarNull">Você precisa digitar um valor!</string>
+    <string name="saldoTotal">Total</string>
+    <string name="debitos">Debitos</string>
+    <string name="emConta">Saldo em Conta</string>
+
+
+
 </resources>

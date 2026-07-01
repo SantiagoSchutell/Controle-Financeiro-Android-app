@@ -10,14 +10,13 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.meucontrolefinaceiro.R
-import com.example.meucontrolefinaceiro.adapters.CorretoraAdapter
 import com.example.meucontrolefinaceiro.databinding.FragmentCorretoraBinding
 import com.example.meucontrolefinaceiro.utils.exibirDialog
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class FragmentCorretora : Fragment() {
+class CorretoraFragment : Fragment() {
     private val args: FragmentCorretoraArgs by navArgs()
     private val ViewModel: CorretoraViewModel by viewModels()
     private val binding by lazy {

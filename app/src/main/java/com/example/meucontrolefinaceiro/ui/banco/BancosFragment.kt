@@ -1,4 +1,4 @@
-package com.example.meucontrolefinaceiro.ui.bancos
+package com.example.meucontrolefinaceiro.ui.banco
 
 import android.net.Uri
 import android.os.Bundle
@@ -14,15 +14,14 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import coil.load
-import com.example.meucontrolefinaceiro.Data.model.Bancos
+import com.example.meucontrolefinaceiro.data.model.Bancos
 import com.example.meucontrolefinaceiro.R
-import com.example.meucontrolefinaceiro.adapters.BancosAdapter
 import com.example.meucontrolefinaceiro.databinding.FragmentBancosBinding
 import com.example.meucontrolefinaceiro.utils.ExtrasFunc
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 
-class FragmentBancos : Fragment() {
+class BancosFragment : Fragment() {
 
     private val binding by lazy {
         FragmentBancosBinding.inflate(layoutInflater)

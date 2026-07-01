@@ -1,4 +1,4 @@
-package com.example.meucontrolefinaceiro.Data.model
+package com.example.meucontrolefinaceiro.data.model
 
 data class Bancos(
     val bancoId: String,

@@ -3,10 +3,10 @@ package com.example.meucontrolefinaceiro.ui.corretoraAberta
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.meucontrolefinaceiro.Data.model.Corretora
+import com.example.meucontrolefinaceiro.data.model.Corretora
 import com.example.meucontrolefinaceiro.R
-import com.example.meucontrolefinaceiro.services.AuthRepositoryImp
-import com.example.meucontrolefinaceiro.utils.constantes
+import com.example.meucontrolefinaceiro.data.repository.AuthRepositoryImp
+import com.example.meucontrolefinaceiro.utils.Constants
 import com.example.meucontrolefinaceiro.utils.dobleToReal
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -45,9 +45,9 @@ class CorretoraViewModel @Inject constructor(private val authRepository: AuthRep
 
         if (idAtivo != null && idConta != null) {
             val ref = FirebaseFirestore.getInstance()
-                .collection(constantes.USER)
+                .collection(Constants.USER)
                 .document(idUsuario!!)
-                .collection(constantes.CONTAS)
+                .collection(Constants.CONTAS)
                 .document(idConta)
                 .collection(idConta)
                 .document(idAtivo)
@@ -88,9 +88,9 @@ class CorretoraViewModel @Inject constructor(private val authRepository: AuthRep
         }
         _loading.value = true
         val ref = FirebaseFirestore.getInstance()
-            .collection(constantes.USER)
+            .collection(Constants.USER)
             .document(idUsuario)
-            .collection(constantes.CONTAS)
+            .collection(Constants.CONTAS)
             .document(idConta)
             .collection(idConta)
             .document(idAtivo)
@@ -126,9 +126,9 @@ class CorretoraViewModel @Inject constructor(private val authRepository: AuthRep
         }
 
         val ref = FirebaseFirestore.getInstance()
-            .collection(constantes.USER)
+            .collection(Constants.USER)
             .document(idUsuario)
-            .collection(constantes.CONTAS)
+            .collection(Constants.CONTAS)
             .document(idConta)
             .collection(idConta)
 
@@ -167,9 +167,9 @@ class CorretoraViewModel @Inject constructor(private val authRepository: AuthRep
         }
 
         val ref = FirebaseFirestore.getInstance()
-            .collection(constantes.USER)
+            .collection(Constants.USER)
             .document(idUsuario)
-            .collection(constantes.CONTAS)
+            .collection(Constants.CONTAS)
             .document(idConta)
             .collection(idConta)
 

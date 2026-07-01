@@ -3,10 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/loginFragment2">
+    app:startDestination="@id/fragmentHome">
     <fragment
         android:id="@+id/fragmentBancos"
-        android:name="com.example.meucontrolefinaceiro.ui.bancos.FragmentBancos"
+        android:name="com.example.meucontrolefinaceiro.ui.banco.BancosFragment"
         android:label="FragmentBancos" >
         <action
             android:id="@+id/action_fragmentBancos_to_loginFragment2"
@@ -17,6 +17,9 @@
         <action
             android:id="@+id/action_BancosToCorretora"
             app:destination="@id/fragmentCorretora" />
+        <action
+            android:id="@+id/actionBancosToHome"
+            app:destination="@id/fragmentHome" />
     </fragment>
     <fragment
         android:id="@+id/loginFragment2"
@@ -36,7 +39,7 @@
     </fragment>
     <fragment
         android:id="@+id/fragmentCadastro"
-        android:name="com.example.meucontrolefinaceiro.ui.cadastro.FragmentCadastro"
+        android:name="com.example.meucontrolefinaceiro.ui.cadastro.CadastroFragment"
         android:label="fragment_cadastro"
         tools:layout="@layout/fragment_cadastro" >
         <action
@@ -52,7 +55,7 @@
     </fragment>
     <fragment
         android:id="@+id/fragmentbancoAberto"
-        android:name="com.example.meucontrolefinaceiro.ui.bancoAberto.FragmentbancoAberto"
+        android:name="com.example.meucontrolefinaceiro.ui.bancoAberto.BancoAbertoFragment"
         android:label="fragment_fragmentbanco_aberto"
         tools:layout="@layout/fragment_fragmentbanco_aberto" >
         <action
@@ -66,7 +69,7 @@
     </fragment>
     <fragment
         android:id="@+id/fragmentCorretora"
-        android:name="com.example.meucontrolefinaceiro.ui.corretoraAberta.FragmentCorretora"
+        android:name="com.example.meucontrolefinaceiro.ui.corretoraAberta.CorretoraFragment"
         android:label="fragment_corretora"
         tools:layout="@layout/fragment_corretora" >
         <action
@@ -81,5 +84,14 @@
             app:destination="@id/loginFragment2"
             app:popUpTo="@id/loginFragment2"
             app:popUpToInclusive="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/fragmentHome"
+        android:name="com.example.meucontrolefinaceiro.ui.home.HomeFragment"
+        android:label="fragment_home"
+        tools:layout="@layout/fragment_home" >
+        <action
+            android:id="@+id/action_fragmentHomeToBancos"
+            app:destination="@id/fragmentBancos" />
     </fragment>
 </navigation>
