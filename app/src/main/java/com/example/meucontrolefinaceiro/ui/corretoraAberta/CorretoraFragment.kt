@@ -17,7 +17,7 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class CorretoraFragment : Fragment() {
-    private val args: FragmentCorretoraArgs by navArgs()
+    private val args: CorretoraFragmentArgs by navArgs()
     private val ViewModel: CorretoraViewModel by viewModels()
     private val binding by lazy {
         FragmentCorretoraBinding.inflate(layoutInflater)

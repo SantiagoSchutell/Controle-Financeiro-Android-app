@@ -158,10 +158,10 @@ class BancosFragment : Fragment() {
 
     fun abrirBanco(click: Bancos){
         if (click.tipoConta == "contaCorrente"){
-            val action = FragmentBancosDirections.bancosToBancoAberto(click.bancoId)
+            val action = BancosFragmentDirections.bancosToBancoAberto(click.bancoId)
             findNavController().navigate(action)
         }else{
-            val action = FragmentBancosDirections.actionBancosToCorretora(click.bancoId)
+            val action = BancosFragmentDirections.actionBancosToCorretora(click.bancoId)
             findNavController().navigate(action)
         }
 

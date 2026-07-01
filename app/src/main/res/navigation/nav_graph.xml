@@ -20,6 +20,10 @@
         <action
             android:id="@+id/actionBancosToHome"
             app:destination="@id/fragmentHome" />
+        <argument
+            android:name="idBanco"
+            app:argType="string"
+            app:nullable="true" />
     </fragment>
     <fragment
         android:id="@+id/loginFragment2"

@@ -19,7 +19,7 @@ import kotlinx.coroutines.launch
 
 
 class BancoAbertoFragment : Fragment() {
-    private val args: FragmentbancoAbertoArgs by navArgs()
+    private val args: BancoAbertoFragmentArgs by navArgs()
     private val viewModel: BancoAbertoViewModel by viewModels()
 
     private val binding by lazy {
