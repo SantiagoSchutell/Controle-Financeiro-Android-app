@@ -1,14 +1,17 @@
 package com.example.meucontrolefinaceiro.ui.home
 
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import com.example.meucontrolefinaceiro.R
-import com.example.meucontrolefinaceiro.utils.Constants
+import androidx.lifecycle.viewModelScope
+import com.example.meucontrolefinaceiro.data.repository.HomeRepository
+import com.example.meucontrolefinaceiro.data.sqlite.BancoDeDados
+import com.example.meucontrolefinaceiro.data.sqlite.SqLiteDAO
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.launch
 
-class HomeViewModel : ViewModel() {
+class HomeViewModel(application: Application) : AndroidViewModel(application) {
     private val _totalSaldo = MutableLiveData<String?>()
     val totalSaldo: LiveData<String?> = _totalSaldo
 
@@ -27,19 +30,27 @@ class HomeViewModel : ViewModel() {
     private val _erroLogin = MutableLiveData<Int?>()
     val erroLogin: LiveData<Int?> = _erroLogin
 
-    private fun buscarSaldos(){
+    private val bancoDeDados = BancoDeDados(application)
+    private  val dao = SqLiteDAO(bancoDeDados)
+    private val repository = HomeRepository(dao)
+
+     fun buscarSaldos(){
         val idUsuario: String? = FirebaseAuth.getInstance().currentUser?.uid
 
-        if (idUsuario != null){
+        viewModelScope.launch {
+            repository.adicionarDados("nubank", "100", "0")
+        }
 
-            ///Vou tacar tudo em SQLite assim que eu enctro ou crio uma conta nova e deois so carregar aqui
+        /*if (idUsuario != null){
+
+            // Ir em cada banco e salvar os saltos no sqlite para pegar aqui
             val ref = FirebaseFirestore.getInstance()
                 .collection(Constants.USER)
                 .document(idUsuario)
 
         }else{
             _erroLogin.value = R.string.login_subtitle
-        }
+        }*/
     }
 
 }

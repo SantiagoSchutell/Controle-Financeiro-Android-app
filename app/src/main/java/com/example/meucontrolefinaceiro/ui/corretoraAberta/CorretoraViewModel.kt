@@ -1,20 +1,26 @@
 package com.example.meucontrolefinaceiro.ui.corretoraAberta
 
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import com.example.meucontrolefinaceiro.data.model.Corretora
+import androidx.lifecycle.viewModelScope
 import com.example.meucontrolefinaceiro.R
+import com.example.meucontrolefinaceiro.data.model.Corretora
 import com.example.meucontrolefinaceiro.data.repository.AuthRepositoryImp
+import com.example.meucontrolefinaceiro.data.repository.HomeRepository
+import com.example.meucontrolefinaceiro.data.sqlite.BancoDeDados
+import com.example.meucontrolefinaceiro.data.sqlite.SqLiteDAO
 import com.example.meucontrolefinaceiro.utils.Constants
 import com.example.meucontrolefinaceiro.utils.dobleToReal
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.hilt.android.lifecycle.HiltViewModel
 import jakarta.inject.Inject
+import kotlinx.coroutines.launch
 
 @HiltViewModel
-class CorretoraViewModel @Inject constructor(private val authRepository: AuthRepositoryImp) :
-    ViewModel() {
+class CorretoraViewModel @Inject constructor(private val authRepository: AuthRepositoryImp, application: Application) :
+    AndroidViewModel(application) {
     private val idUsuario: String? = authRepository.getUserId()
     private val _erroSalvar = MutableLiveData<Int?>()
     val erroSalvar: LiveData<Int?> = _erroSalvar
@@ -39,6 +45,10 @@ class CorretoraViewModel @Inject constructor(private val authRepository: AuthRep
     private val _saldoTotal = MutableLiveData<String?>()
     val saldoTotal: LiveData<String?> = _saldoTotal
 
+    private val bancoDados = BancoDeDados(application)
+    private val dao = SqLiteDAO(bancoDados)
+    private val repository = HomeRepository(dao)
+
 
     fun editarAtivo(idAtivo: String?, idConta: String?, newValor: Double) {
         _loading.value = true
@@ -58,6 +68,7 @@ class CorretoraViewModel @Inject constructor(private val authRepository: AuthRep
                 )
 
                 ref.update(valores).addOnSuccessListener {
+                    carregarAtivo(idConta)
                     _editarStatus.value = R.string.editarSucess
                     _loading.value = false
 
@@ -97,6 +108,7 @@ class CorretoraViewModel @Inject constructor(private val authRepository: AuthRep
 
         ref.delete()
             .addOnSuccessListener {
+                carregarAtivo(idConta)
                 _loading.value = false
             }
             .addOnFailureListener {
@@ -132,26 +144,42 @@ class CorretoraViewModel @Inject constructor(private val authRepository: AuthRep
             .document(idConta)
             .collection(idConta)
 
+        val refNome = FirebaseFirestore.getInstance()
+            .collection(Constants.USER)
+            .document(idUsuario)
+            .collection(Constants.CONTAS)
+            .document(idConta)
 
         val novoDocRef = ref.document()
         val idGerado = novoDocRef.id
 
-        val data = mapOf(
-            "idOperacao" to idConta,
-            "idAtivo" to idGerado,
-            "AtivoNome" to nomeAtivo,
-            "saldo" to 0
-        )
 
+        refNome.get().addOnSuccessListener { doc ->
+            val nome = doc.getString("nomeConta") ?: "null"
 
-        novoDocRef.set(data)
-            .addOnSuccessListener { doc ->
-                _loading.value = false
+            val data = mapOf(
+                "nomeConta" to nome,
+                "idOperacao" to idConta,
+                "idAtivo" to idGerado,
+                "AtivoNome" to nomeAtivo,
+                "saldo" to 0
+            )
+
+            viewModelScope.launch {
+                repository.adicionarDados(nome, "0", "0")
             }
-            .addOnFailureListener {
-                _loading.value = false
-                _erroSalvar.value = R.string.valorErroA
-            }
+
+            novoDocRef.set(data)
+                .addOnSuccessListener { doc ->
+                    _loading.value = false
+                }
+                .addOnFailureListener {
+                    _loading.value = false
+                    _erroSalvar.value = R.string.valorErroA
+                }
+
+        }
+
     }
 
     fun carregarAtivo(idConta: String?) {
@@ -173,29 +201,40 @@ class CorretoraViewModel @Inject constructor(private val authRepository: AuthRep
             .document(idConta)
             .collection(idConta)
 
-        ref.addSnapshotListener() { value, error ->
+
+
+        ref.addSnapshotListener() { document, error ->
             if (error != null) {
                 _errocarregar.value = R.string.BuscarErro
                 _loading.value = false
             }
 
-            val lista = value?.mapNotNull { doc ->
+            val lista = document?.mapNotNull { doc ->
+                val nome = doc.getString("nomeConta")?: "null"
+                val somaTotal = document?.documents?.sumOf { doc -> doc.getDouble("saldo") ?: 0.0 } ?: 0.0
+
+                viewModelScope.launch {
+                    repository.atualizarDados(nome, somaTotal.toString(), "0")
+                }
                 Corretora(
                     doc.getString("idAtivo") ?: "null",
                     dobleToReal(doc.getDouble("saldo")!!),
                     doc.getString("AtivoNome") ?: "null"
 
                 )
+
             } ?: emptyList()
 
-            val somaTotal = value?.documents?.sumOf { doc ->
-                doc.getDouble("saldo") ?: 0.0
-            } ?: 0.0
+            val somaTotal = document?.documents?.sumOf { doc -> doc.getDouble("saldo") ?: 0.0 } ?: 0.0
+
 
             _saldoTotal.value = dobleToReal(somaTotal)
             _listaAtivos.value = lista
-
         }
 
+
+
     }
+
+
 }

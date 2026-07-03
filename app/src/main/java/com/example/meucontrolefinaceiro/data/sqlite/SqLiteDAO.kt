@@ -3,11 +3,11 @@ package com.example.meucontrolefinaceiro.data.sqlite
 import android.content.ContentValues
 import com.example.meucontrolefinaceiro.utils.Constants
 
-class SqLiteDAO(private val dbHeloer: BancoDeDados ) {
+class SqLiteDAO(private val dbHelper: BancoDeDados ) {
 
     fun SQLiteLer(): List<String>{
 
-        val db = dbHeloer.readableDatabase
+        val db = dbHelper.readableDatabase
         val dadosSQLite = mutableListOf<String>()
         val resultado = db.query(Constants.SQLite, null, null, null, null, null, null)
 
@@ -25,18 +25,14 @@ class SqLiteDAO(private val dbHeloer: BancoDeDados ) {
     }
 
     fun SQLiteAdd(idUser: String, saldoTotal: String, debitoTotal: String): Boolean{
-        val db = dbHeloer.writableDatabase
+        val db = dbHelper.writableDatabase
         val values = ContentValues().apply {
             put("idUser", idUser)
             put("SaldoTotal", saldoTotal)
             put("debitoTotal", debitoTotal)
         }
         val resultado = db.insert(Constants.SQLite, null, values)
-        if(resultado == -1L){
-            return false
-        }
-
-        return true
+        return resultado != -1L
     }
 
     fun atualizarDados(idUser: String, saldoTotalNovo: String, debitoTotalNovo: String): Int{
@@ -44,7 +40,7 @@ class SqLiteDAO(private val dbHeloer: BancoDeDados ) {
             put("SaldoTotal", saldoTotalNovo)
             put("debitoTotal", debitoTotalNovo)
         }
-        val db = dbHeloer.writableDatabase
+        val db = dbHelper.writableDatabase
         return db.update(Constants.SQLite, valores, "idUser = ?", arrayOf(idUser))
     }
 

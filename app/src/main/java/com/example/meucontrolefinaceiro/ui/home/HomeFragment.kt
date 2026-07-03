@@ -9,12 +9,15 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.example.meucontrolefinaceiro.R
 import com.example.meucontrolefinaceiro.databinding.FragmentHomeBinding
+import com.google.firebase.auth.FirebaseAuth
 
-class HomeFragment : Fragment() {
+class HomeFragment() : Fragment() {
     private val viewModel : HomeViewModel by viewModels()
     private val binding by lazy {
         FragmentHomeBinding.inflate(layoutInflater)
     }
+
+
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -25,8 +28,12 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        if (FirebaseAuth.getInstance().currentUser?.uid==null){
+            findNavController().navigate(R.id.action_fragmentHome_to_loginFragment2)
+        }
+
         binding.btnContas.setOnClickListener {
-            findNavController().navigate(R.id.action_fragmentHomeToBancos)
+           findNavController().navigate(R.id.action_fragmentHomeToBancos)
         }
 
     }

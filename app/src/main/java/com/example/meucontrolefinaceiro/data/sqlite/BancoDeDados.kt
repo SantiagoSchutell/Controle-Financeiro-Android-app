@@ -8,7 +8,7 @@ import com.example.meucontrolefinaceiro.utils.Constants
 class  BancoDeDados(context: Context) : SQLiteOpenHelper(context, Constants.SQLite, null, 1) {
 
     override fun onCreate(db: SQLiteDatabase?) {
-        db?.execSQL("CREATE TABLE ${Constants.SQLite} ( idUser TEXT PRIMARY KEY)); ")
+        db?.execSQL("CREATE TABLE ${Constants.SQLite} (idUser TEXT PRIMARY KEY, SaldoTotal TEXT, debitoTotal TEXT);")
     }
 
     override fun onUpgrade(

@@ -1,11 +1,15 @@
 package com.example.meucontrolefinaceiro.ui.bancoAberto
 
+import android.app.Application
 import android.util.Log
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.meucontrolefinaceiro.R
+import com.example.meucontrolefinaceiro.data.repository.HomeRepository
+import com.example.meucontrolefinaceiro.data.sqlite.BancoDeDados
+import com.example.meucontrolefinaceiro.data.sqlite.SqLiteDAO
 import com.example.meucontrolefinaceiro.utils.dobleToReal
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -14,7 +18,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 
 
-class BancoAbertoViewModel : ViewModel() {
+class BancoAbertoViewModel(application: Application) : AndroidViewModel(application) {
 
     var nomeConta: String = ""
     var tipoConta: String = ""
@@ -46,6 +50,10 @@ class BancoAbertoViewModel : ViewModel() {
 
     private val _dadosBanco = MutableLiveData<DadosDaConta>()
     val dadosBanco: LiveData<DadosDaConta> = _dadosBanco
+
+    private val bancoDeDados = BancoDeDados(application)
+    private val dao = SqLiteDAO(bancoDeDados)
+    private val repositori = HomeRepository(dao)
 
 
     fun buscarDados(idUser: String, idConta: String?, tipo: String, valor: String) {
@@ -80,6 +88,8 @@ class BancoAbertoViewModel : ViewModel() {
                 saldo = snapshot.getDouble("saldo")!!
                 saldoLiq = snapshot.getDouble("saldoLiq")!!
                 debito = snapshot.getDouble("debito")!!
+
+
 
                 adicionarTrazaçoes(idUser, idConta, tipo, valor)
 
@@ -199,6 +209,10 @@ class BancoAbertoViewModel : ViewModel() {
                 val formatSaldo = dobleToReal(saldo)
                 val formatsaldoLiq = dobleToReal(saldoLiq)
                 val formatdebito = dobleToReal(debito)
+
+                viewModelScope.launch {
+                    repositori.adicionarDados(nomeConta, saldo.toString(), debito.toString())
+                }
 
                 val dados = DadosDaConta(
                     nomeConta = nomeConta,
