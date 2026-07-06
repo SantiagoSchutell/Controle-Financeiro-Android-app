@@ -1,0 +1,6 @@
+Banco de Dados:
+
+ TipoConta          SaldoTotal     DebitoTotal
+ "corrente"          "100.000"       "1.000"
+ "corretora"         "300.000"        "0.0"
+

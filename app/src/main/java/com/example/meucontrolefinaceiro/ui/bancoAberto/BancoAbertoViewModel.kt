@@ -211,7 +211,7 @@ class BancoAbertoViewModel(application: Application) : AndroidViewModel(applicat
                 val formatdebito = dobleToReal(debito)
 
                 viewModelScope.launch {
-                    repositori.adicionarDados(nomeConta, saldo.toString(), debito.toString())
+                    repositori.adicionarDados(idConta, "contaCorrente",saldo.toString(), debito.toString())
                 }
 
                 val dados = DadosDaConta(
@@ -221,10 +221,10 @@ class BancoAbertoViewModel(application: Application) : AndroidViewModel(applicat
                     saldoLiq = formatsaldoLiq,
                     debito = formatdebito
                 )
+
+
                 _dadosBanco.postValue(dados)
             }
-
-
     }
 
 }

@@ -5,22 +5,24 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 class HomeRepository(private val userDAO: SqLiteDAO) {
-
-    suspend fun lerDados(): List<String>{
-        return withContext(Dispatchers.IO){
-            userDAO.SQLiteLer()
+    suspend fun adicionarDados(idConta: String, tipoConta: String, saldoTotal: String, debitoTotal: String){
+         withContext(Dispatchers.IO){
+            userDAO.SQLiteAdd(idConta, tipoConta, saldoTotal, debitoTotal)
         }
     }
 
-    suspend fun adicionarDados(contaNome: String, saldoTotal: String, debitoTotal: String){
-        return withContext(Dispatchers.IO){
-            userDAO.SQLiteAdd(contaNome, saldoTotal, debitoTotal)
+/*
+    suspend fun atualizarDados(operacao: Int, tipoConta: String, saldoTotalNovo: String, debitoTotalNovo: String){
+         withContext(Dispatchers.IO) {
+            userDAO.atualizarDados(operacao, saldoTotalNovo, debitoTotalNovo,)
         }
-    }
-
-    suspend fun atualizarDados(contaNome: String, saldoTotalNovo: String, debitoTotalNovo: String): Int{
+    }*/
+    suspend fun buscarResumoHome(): Pair<SqLiteDAO.TotalFinanceiro, SqLiteDAO.TotalFinanceiro> {
         return withContext(Dispatchers.IO) {
-            userDAO.atualizarDados(contaNome, saldoTotalNovo, debitoTotalNovo)
+            val corretoras = userDAO.obterTotaisPorTipo("corretora")
+            val contaCorrente = userDAO.obterTotaisPorTipo("contaCorrente")
+
+            Pair(corretoras, contaCorrente)
         }
     }
 

@@ -165,9 +165,6 @@ class CorretoraViewModel @Inject constructor(private val authRepository: AuthRep
                 "saldo" to 0
             )
 
-            viewModelScope.launch {
-                repository.adicionarDados(nome, "0", "0")
-            }
 
             novoDocRef.set(data)
                 .addOnSuccessListener { doc ->
@@ -210,12 +207,10 @@ class CorretoraViewModel @Inject constructor(private val authRepository: AuthRep
             }
 
             val lista = document?.mapNotNull { doc ->
-                val nome = doc.getString("nomeConta")?: "null"
                 val somaTotal = document?.documents?.sumOf { doc -> doc.getDouble("saldo") ?: 0.0 } ?: 0.0
 
-                viewModelScope.launch {
-                    repository.atualizarDados(nome, somaTotal.toString(), "0")
-                }
+
+
                 Corretora(
                     doc.getString("idAtivo") ?: "null",
                     dobleToReal(doc.getDouble("saldo")!!),
@@ -226,7 +221,9 @@ class CorretoraViewModel @Inject constructor(private val authRepository: AuthRep
             } ?: emptyList()
 
             val somaTotal = document?.documents?.sumOf { doc -> doc.getDouble("saldo") ?: 0.0 } ?: 0.0
-
+            viewModelScope.launch {
+                repository.adicionarDados(idConta,  "corretora","$somaTotal", "0")
+            }
 
             _saldoTotal.value = dobleToReal(somaTotal)
             _listaAtivos.value = lista

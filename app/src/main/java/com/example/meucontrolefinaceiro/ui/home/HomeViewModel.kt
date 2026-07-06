@@ -5,10 +5,12 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.example.meucontrolefinaceiro.data.model.Dadosbanco
 import com.example.meucontrolefinaceiro.data.repository.HomeRepository
 import com.example.meucontrolefinaceiro.data.sqlite.BancoDeDados
 import com.example.meucontrolefinaceiro.data.sqlite.SqLiteDAO
-import com.google.firebase.auth.FirebaseAuth
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 class HomeViewModel(application: Application) : AndroidViewModel(application) {
@@ -30,27 +32,22 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     private val _erroLogin = MutableLiveData<Int?>()
     val erroLogin: LiveData<Int?> = _erroLogin
 
+    private val _dadosConta = MutableLiveData<Dadosbanco>()
+    val dadosConta: MutableLiveData<Dadosbanco> = _dadosConta
+
+    private val _resumoFinanceiro = MutableStateFlow<Pair<SqLiteDAO.TotalFinanceiro, SqLiteDAO.TotalFinanceiro>?>(null)
+    val resumoFinanceiro: StateFlow<Pair<SqLiteDAO.TotalFinanceiro, SqLiteDAO.TotalFinanceiro>?> = _resumoFinanceiro
+
     private val bancoDeDados = BancoDeDados(application)
     private  val dao = SqLiteDAO(bancoDeDados)
     private val repository = HomeRepository(dao)
 
      fun buscarSaldos(){
-        val idUsuario: String? = FirebaseAuth.getInstance().currentUser?.uid
-
         viewModelScope.launch {
-            repository.adicionarDados("nubank", "100", "0")
+            val resultadoQueVeioDoBanco = repository.buscarResumoHome()
+            _resumoFinanceiro.value = resultadoQueVeioDoBanco
         }
-
-        /*if (idUsuario != null){
-
-            // Ir em cada banco e salvar os saltos no sqlite para pegar aqui
-            val ref = FirebaseFirestore.getInstance()
-                .collection(Constants.USER)
-                .document(idUsuario)
-
-        }else{
-            _erroLogin.value = R.string.login_subtitle
-        }*/
     }
+
 
 }

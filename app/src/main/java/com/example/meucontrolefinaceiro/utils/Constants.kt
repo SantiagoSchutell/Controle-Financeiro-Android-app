@@ -6,4 +6,6 @@ object Constants {
     val CONTAS = "Contas"
 
     val SQLite = "FinanceData"
+    val CORRETORA = "corretora"
+    val CORRENTE = "corrente"
 }

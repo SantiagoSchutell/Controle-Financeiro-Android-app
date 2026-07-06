@@ -1,47 +1,43 @@
 package com.example.meucontrolefinaceiro.data.sqlite
 
 import android.content.ContentValues
+import android.database.sqlite.SQLiteDatabase
 import com.example.meucontrolefinaceiro.utils.Constants
+import com.example.meucontrolefinaceiro.utils.dobleToReal
 
 class SqLiteDAO(private val dbHelper: BancoDeDados ) {
+    data class TotalFinanceiro(
+        val totalSaldo: String,
+        val totalDebito: String
+    )
 
-    fun SQLiteLer(): List<String>{
-
+    fun obterTotaisPorTipo(tipoBuscado: String): TotalFinanceiro {
         val db = dbHelper.readableDatabase
-        val dadosSQLite = mutableListOf<String>()
-        val resultado = db.query(Constants.SQLite, null, null, null, null, null, null)
+        var saldoSomado = "0.0"
+        var debitoSomado = "0.0"
 
-        if (resultado.moveToFirst()){
-            do {
-                val saldoTotal = resultado.getString(resultado.getColumnIndexOrThrow("SaldoTotal"))
-                dadosSQLite.add(saldoTotal)
-                val debitoTotal = resultado.getString(resultado.getColumnIndexOrThrow("debitoTotal"))
-                dadosSQLite.add(debitoTotal)
+        val sql = "SELECT SUM(saldoTotal), SUM(debitoTotal) FROM ${Constants.SQLite} WHERE tipoConta = ?"
 
-            }while (resultado.moveToNext())
+        val cursor = db.rawQuery(sql, arrayOf(tipoBuscado))
+
+        if (cursor.moveToFirst()) {
+            saldoSomado = dobleToReal(cursor.getDouble(0))
+            debitoSomado = dobleToReal(cursor.getDouble(1))
         }
 
-        return dadosSQLite
+        cursor.close()
+        return TotalFinanceiro(saldoSomado, debitoSomado)
     }
-
-    fun SQLiteAdd(idUser: String, saldoTotal: String, debitoTotal: String): Boolean{
+    fun SQLiteAdd(idConta: String, tipoConta: String, saldo: String, debito: String){
         val db = dbHelper.writableDatabase
         val values = ContentValues().apply {
-            put("idUser", idUser)
-            put("SaldoTotal", saldoTotal)
-            put("debitoTotal", debitoTotal)
+            put("idConta", idConta)
+            put("tipoConta", tipoConta)
+            put("saldoTotal", saldo)
+            put("debitoTotal", debito)
         }
-        val resultado = db.insert(Constants.SQLite, null, values)
-        return resultado != -1L
-    }
 
-    fun atualizarDados(idUser: String, saldoTotalNovo: String, debitoTotalNovo: String): Int{
-        val valores = ContentValues().apply {
-            put("SaldoTotal", saldoTotalNovo)
-            put("debitoTotal", debitoTotalNovo)
-        }
-        val db = dbHelper.writableDatabase
-        return db.update(Constants.SQLite, valores, "idUser = ?", arrayOf(idUser))
+        db.insertWithOnConflict(Constants.SQLite, null, values, SQLiteDatabase.CONFLICT_REPLACE )
     }
 
     fun  SQLiteRemover(item: String){
