@@ -29,22 +29,19 @@ class HomeFragment() : Fragment() {
 
         viewModel.buscarSaldos()
         viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.resumoFinanceiro.collect { resumo->
+            viewModel.resumoParaTela.collect { resumo->
                 if (resumo!=null){
-                    val dadosCorretoras = resumo.first
-                    val dadosBancos = resumo.second
 
-                    binding.textDebitosTotal.text = dadosBancos.totalDebito
-                    binding.textSaldoEmContaTotal.text = dadosBancos.totalSaldo
+                    binding.textDebitosTotal.text = resumo.contaDebitoString
+                    binding.textSaldoEmContaTotal.text = resumo.contaSaldoString
 
-                    binding.textSaldoTotalInvestido.text = dadosCorretoras.totalSaldo
+                    binding.textSaldoTotalInvestido.text = resumo.corretoraSaldoString
 
-                    binding.textTotal.text = dadosBancos.totalSaldo
+
+                    //Valor Total
+                    binding.textTotal.text = resumo.totalSaldos
                 }
             }
-        }
-        viewModel.dadosConta.observe(viewLifecycleOwner){dados->
-            binding.textDebitosTotal
         }
 
 

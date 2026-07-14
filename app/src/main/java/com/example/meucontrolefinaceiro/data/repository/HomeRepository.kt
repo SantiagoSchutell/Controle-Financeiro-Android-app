@@ -11,12 +11,6 @@ class HomeRepository(private val userDAO: SqLiteDAO) {
         }
     }
 
-/*
-    suspend fun atualizarDados(operacao: Int, tipoConta: String, saldoTotalNovo: String, debitoTotalNovo: String){
-         withContext(Dispatchers.IO) {
-            userDAO.atualizarDados(operacao, saldoTotalNovo, debitoTotalNovo,)
-        }
-    }*/
     suspend fun buscarResumoHome(): Pair<SqLiteDAO.TotalFinanceiro, SqLiteDAO.TotalFinanceiro> {
         return withContext(Dispatchers.IO) {
             val corretoras = userDAO.obterTotaisPorTipo("corretora")

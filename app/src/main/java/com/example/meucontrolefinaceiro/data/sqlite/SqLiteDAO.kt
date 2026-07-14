@@ -3,26 +3,26 @@ package com.example.meucontrolefinaceiro.data.sqlite
 import android.content.ContentValues
 import android.database.sqlite.SQLiteDatabase
 import com.example.meucontrolefinaceiro.utils.Constants
-import com.example.meucontrolefinaceiro.utils.dobleToReal
 
 class SqLiteDAO(private val dbHelper: BancoDeDados ) {
     data class TotalFinanceiro(
-        val totalSaldo: String,
-        val totalDebito: String
+        val totalSaldo: Double,
+        val totalDebito: Double
     )
+
 
     fun obterTotaisPorTipo(tipoBuscado: String): TotalFinanceiro {
         val db = dbHelper.readableDatabase
-        var saldoSomado = "0.0"
-        var debitoSomado = "0.0"
+        var saldoSomado = 0.0
+        var debitoSomado = 0.0
 
         val sql = "SELECT SUM(saldoTotal), SUM(debitoTotal) FROM ${Constants.SQLite} WHERE tipoConta = ?"
 
         val cursor = db.rawQuery(sql, arrayOf(tipoBuscado))
 
         if (cursor.moveToFirst()) {
-            saldoSomado = dobleToReal(cursor.getDouble(0))
-            debitoSomado = dobleToReal(cursor.getDouble(1))
+            saldoSomado = cursor.getDouble(0)
+            debitoSomado = cursor.getDouble(1)
         }
 
         cursor.close()
