@@ -4,12 +4,14 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.meucontrolefinaceiro.R
+import com.example.meucontrolefinaceiro.data.repository.AuthRepositoryImp
 import com.example.meucontrolefinaceiro.utils.Constants
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
+import jakarta.inject.Inject
 
-class CadastroViewModel : ViewModel() {
+class CadastroViewModel@Inject constructor(private val authRepository: AuthRepositoryImp) : ViewModel() {
     private val _nomeErro = MutableLiveData<Int>()
     val nomeErro: LiveData<Int?> = _nomeErro
 
@@ -76,14 +78,14 @@ class CadastroViewModel : ViewModel() {
 
     }
 
-    private fun salvarFirebase(idUser: String, userName: String) {
+    private fun salvarFirebase(uid: String, userName: String) {
         val data = mapOf(
             "UserName" to userName
         )
 
         FirebaseFirestore.getInstance()
             .collection(Constants.USER)
-            .document(idUser)
+            .document(uid)
             .set(data, SetOptions.merge())
             .addOnSuccessListener {
                 _dadosSalvo.value = true

@@ -7,19 +7,23 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.meucontrolefinaceiro.R
+import com.example.meucontrolefinaceiro.data.repository.AuthRepositoryImp
 import com.example.meucontrolefinaceiro.data.repository.HomeRepository
 import com.example.meucontrolefinaceiro.data.sqlite.BancoDeDados
 import com.example.meucontrolefinaceiro.data.sqlite.SqLiteDAO
 import com.example.meucontrolefinaceiro.utils.dobleToReal
 import com.google.firebase.firestore.FirebaseFirestore
+import dagger.hilt.android.lifecycle.HiltViewModel
+import jakarta.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 
+@HiltViewModel
+class BancoAbertoViewModel@Inject constructor(private val authRepository: AuthRepositoryImp, application: Application) : AndroidViewModel(application) {
 
-class BancoAbertoViewModel(application: Application) : AndroidViewModel(application) {
-
+    private val idUser: String? = authRepository.getUserId()
     var nomeConta: String = ""
     var tipoConta: String = ""
     var saldo: Double = 0.0
@@ -56,7 +60,7 @@ class BancoAbertoViewModel(application: Application) : AndroidViewModel(applicat
     private val repositori = HomeRepository(dao)
 
 
-    fun buscarDados(idUser: String, idConta: String?, tipo: String, valor: String) {
+    fun buscarDados(idConta: String?, tipo: String, valor: String) {
         _errorValorAddTrz.value = null
 
         if (valor.isBlank()) {
@@ -72,14 +76,14 @@ class BancoAbertoViewModel(application: Application) : AndroidViewModel(applicat
 
         val valorEmNum = valor.toDoubleOrNull()!!
         viewModelScope.launch {
-            carregarDados(idUser, idConta, tipo, valorEmNum)
+            carregarDados(idConta, tipo, valorEmNum)
         }
 
     }
 
-    suspend fun carregarDados(idUser: String, idConta: String, tipo: String, valor: Double) {
+    suspend fun carregarDados(idConta: String, tipo: String, valor: Double) {
         val ref = FirebaseFirestore.getInstance().collection("usuario")
-            .document(idUser).collection("Contas").document(idConta)
+            .document(idUser!!).collection("Contas").document(idConta)
         try {
             val snapshot = ref.get().await()
             if (snapshot.exists()) {
@@ -91,7 +95,7 @@ class BancoAbertoViewModel(application: Application) : AndroidViewModel(applicat
 
 
 
-                adicionarTrazaçoes(idUser, idConta, tipo, valor)
+                adicionarTrazaçoes(idConta, tipo, valor)
 
             } else {
                 Log.i("ErroCarregarDados", "Documentos não encontrado")
@@ -101,7 +105,7 @@ class BancoAbertoViewModel(application: Application) : AndroidViewModel(applicat
         }
     }
 
-    fun adicionarTrazaçoes(idUser: String, idConta: String, tipo: String, valor: Double) {
+    fun adicionarTrazaçoes(idConta: String, tipo: String, valor: Double) {
         _loading.value = true
         if (valor == null) {
             _addTrazacaoStatus.value = R.string.addTraz_failed
@@ -116,7 +120,7 @@ class BancoAbertoViewModel(application: Application) : AndroidViewModel(applicat
 
         val ref = FirebaseFirestore.getInstance()
             .collection("usuario")
-            .document(idUser)
+            .document(idUser!!)
             .collection("Contas")
             .document(idConta)
 
@@ -130,7 +134,7 @@ class BancoAbertoViewModel(application: Application) : AndroidViewModel(applicat
                 .addOnSuccessListener {
                     _loading.value = false
                     _addTrazacaoStatus.value = R.string.addTraz_Sucess
-                    atualizarDados(idUser, idConta)
+                    atualizarDados( idConta)
 
                 }
                 .addOnFailureListener { error ->
@@ -149,7 +153,7 @@ class BancoAbertoViewModel(application: Application) : AndroidViewModel(applicat
                 .addOnSuccessListener {
                     _loading.value = false
                     _addTrazacaoStatus.value = R.string.addTraz_Sucess
-                    atualizarDados(idUser, idConta)
+                    atualizarDados(idConta)
 
                 }
                 .addOnFailureListener { error ->
@@ -160,7 +164,7 @@ class BancoAbertoViewModel(application: Application) : AndroidViewModel(applicat
         }
     }
 
-    fun editarSaldo(idUser: String, idConta: String?, valor: String) {
+    fun editarSaldo(idConta: String?, valor: String) {
         _errorValorEdit.value = null
         _loading.value = true
 
@@ -175,13 +179,13 @@ class BancoAbertoViewModel(application: Application) : AndroidViewModel(applicat
         viewModelScope.launch {
             val ref = FirebaseFirestore.getInstance()
                 .collection("usuario")
-                .document(idUser)
+                .document(idUser!!)
                 .collection("Contas")
                 .document(idConta!!)
             ref.update("saldo", valorEmDouble)
                 .addOnSuccessListener {
                     _loading.value = false
-                    atualizarDados(idUser, idConta)
+                    atualizarDados(idConta)
 
                 }
                 .addOnFailureListener {
@@ -190,9 +194,9 @@ class BancoAbertoViewModel(application: Application) : AndroidViewModel(applicat
         }
     }
 
-    fun atualizarDados(idUser: String, idConta: String) {
+    fun atualizarDados(idConta: String) {
         val ref = FirebaseFirestore.getInstance().collection("usuario")
-            .document(idUser).collection("Contas").document(idConta)
+            .document(idUser!!).collection("Contas").document(idConta)
 
         ref.get()
             .addOnSuccessListener { snapshot ->

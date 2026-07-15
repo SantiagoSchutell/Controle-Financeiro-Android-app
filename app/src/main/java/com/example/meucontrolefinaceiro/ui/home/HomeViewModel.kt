@@ -31,9 +31,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     private  val dao = SqLiteDAO(bancoDeDados)
     private val repository = HomeRepository(dao)
 
-    val resumoParaTela: StateFlow<ResumoFinanceiroUiState> = _resumoFinanceiro
-        .filterNotNull()
-        .map { parDeResultados ->
+    val resumoParaTela: StateFlow<ResumoFinanceiroUiState> = _resumoFinanceiro.filterNotNull().map { parDeResultados ->
 
             val contaCorrente = parDeResultados.second
             val corretora = parDeResultados.first

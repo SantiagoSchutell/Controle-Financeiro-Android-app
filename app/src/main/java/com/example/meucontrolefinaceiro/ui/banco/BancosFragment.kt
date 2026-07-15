@@ -71,7 +71,7 @@ class BancosFragment : Fragment() {
         }
 
 
-        viewModel.obterDados(idUsuario!!)
+        viewModel.obterDados()
 
         viewModel.erroNome.observe(viewLifecycleOwner) { resId ->
             binding.editTextNomeConta.error = resId?.let { getString(it) }
@@ -144,7 +144,7 @@ class BancosFragment : Fragment() {
                 Snackbar.make(binding.root, R.string.add_error_data, Snackbar.LENGTH_LONG).show()
             } else {
                 if (uriImagem != null){
-                    viewModel.adicionarNovaConta(idUsuario!!, nome, isCorrente, uriImagem!! , requireContext())
+                    viewModel.adicionarNovaConta( nome, isCorrente, uriImagem!! , requireContext())
                 } else{
                     Snackbar.make(binding.root, R.string.add_error_img, Snackbar.LENGTH_LONG).show()
                 }

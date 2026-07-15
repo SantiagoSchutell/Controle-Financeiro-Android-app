@@ -40,7 +40,7 @@ class BancosViewModel@Inject constructor(private val authRepository: AuthReposit
 
 
 
-    fun adicionarNovaConta(userId: String, nome : String, isCorrente: Boolean, uri: Uri, context: Context){
+    fun adicionarNovaConta(nome : String, isCorrente: Boolean, uri: Uri, context: Context){
         _loading.value = true
 
             if (nome.isEmpty()){
@@ -55,12 +55,12 @@ class BancosViewModel@Inject constructor(private val authRepository: AuthReposit
             val tipoDeConta = if (isCorrente) "contaCorrente" else "contaInvestimentos"
 
 
-            compactarImagem(userId, nome, tipoDeConta, uri, context )
+            compactarImagem( nome, tipoDeConta, uri, context )
 
 
     }
 
-    fun salvarFirebase(idUser: String, nomeConta: String, tipoDeConta:String, uri: String, context: Context){
+    fun salvarFirebase(nomeConta: String, tipoDeConta:String, uri: String, context: Context){
 
         val dadosDaConta = mapOf(
             "nomeConta" to nomeConta,
@@ -74,7 +74,7 @@ class BancosViewModel@Inject constructor(private val authRepository: AuthReposit
 
         FirebaseFirestore.getInstance()
             .collection(Constants.USER)
-            .document(idUser)
+            .document(idUsuario!!)
             .collection(Constants.CONTAS)
             .document()
             .set(dadosDaConta)
@@ -89,9 +89,9 @@ class BancosViewModel@Inject constructor(private val authRepository: AuthReposit
 
     }
 
-    fun salvarStorage(idUser: String, bytesComprimidos: ByteArray, nomebanco: String, tipoConta:String,  context: Context){
+    fun salvarStorage(bytesComprimidos: ByteArray, nomebanco: String, tipoConta:String,  context: Context){
         val storageRef = FirebaseStorage.getInstance()
-            .reference.child(idUser)
+            .reference.child(idUsuario!!)
             .child(Constants.IMAGENS)
             .child(nomebanco)
             .child(nomebanco)
@@ -101,7 +101,7 @@ class BancosViewModel@Inject constructor(private val authRepository: AuthReposit
                 storageRef.downloadUrl.addOnSuccessListener {uriDownload->
                     val urlParaSalvarNoBanco = uriDownload.toString()
 
-                    salvarFirebase(idUser, nomebanco, tipoConta,urlParaSalvarNoBanco, context )
+                    salvarFirebase( nomebanco, tipoConta,urlParaSalvarNoBanco, context )
                     _salvarStatus.value = "salvo"
 
                     _loading.value = false
@@ -115,7 +115,7 @@ class BancosViewModel@Inject constructor(private val authRepository: AuthReposit
             }
     }
 
-    fun compactarImagem(idUser: String, nomeConta: String,tipoConta:String, uri: Uri, context: Context){
+    fun compactarImagem(nomeConta: String,tipoConta:String, uri: Uri, context: Context){
           try {
               _loading.value = true
             val inputStream = context.contentResolver.openInputStream(uri)
@@ -134,7 +134,7 @@ class BancosViewModel@Inject constructor(private val authRepository: AuthReposit
 
              val bytes = outputStream.toByteArray()
 
-              salvarStorage(idUser,bytes, nomeConta, tipoConta, context)
+              salvarStorage(bytes, nomeConta, tipoConta, context)
 
         }catch (e: Exception){
             e.printStackTrace()
@@ -144,9 +144,9 @@ class BancosViewModel@Inject constructor(private val authRepository: AuthReposit
           }
     }
 
-    fun obterDados(idUsuario: String){
+    fun obterDados(){
         val ref = FirebaseFirestore.getInstance().collection("usuario")
-            .document(idUsuario).collection("Contas")
+            .document(idUsuario!!).collection("Contas")
 
             ref.addSnapshotListener { value, error ->
                 if (error != null) {

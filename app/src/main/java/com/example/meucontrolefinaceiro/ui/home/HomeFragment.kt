@@ -26,6 +26,11 @@ class HomeFragment() : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        //Tirar depois
+        if (FirebaseAuth.getInstance().currentUser?.uid==null){
+            findNavController().navigate(R.id.action_fragmentHome_to_loginFragment2)
+        }
+
 
         viewModel.buscarSaldos()
         viewLifecycleOwner.lifecycleScope.launch {
@@ -45,10 +50,7 @@ class HomeFragment() : Fragment() {
         }
 
 
-        //Tirar depois
-        if (FirebaseAuth.getInstance().currentUser?.uid==null){
-            findNavController().navigate(R.id.action_fragmentHome_to_loginFragment2)
-        }
+
 
         binding.btnContas.setOnClickListener {
            findNavController().navigate(R.id.action_fragmentHomeToBancos)

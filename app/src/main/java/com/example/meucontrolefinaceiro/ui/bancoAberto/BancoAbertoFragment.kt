@@ -14,10 +14,10 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.navArgs
 import com.example.meucontrolefinaceiro.databinding.FragmentFragmentbancoAbertoBinding
 import com.google.android.material.snackbar.Snackbar
-import com.google.firebase.auth.FirebaseAuth
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
-
+@AndroidEntryPoint
 class BancoAbertoFragment : Fragment() {
     private val args: BancoAbertoFragmentArgs by navArgs()
     private val viewModel: BancoAbertoViewModel by viewModels()
@@ -38,8 +38,7 @@ class BancoAbertoFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val idBanco = args.idBanco
-        val idusuario = FirebaseAuth.getInstance().currentUser!!.uid
-        viewModel.atualizarDados(idusuario, idBanco!!)
+        viewModel.atualizarDados( idBanco!!)
 
         viewModel.loading.observe(viewLifecycleOwner) { status ->
             binding.progressBarBancoAberto.visibility = if (status) View.VISIBLE else View.GONE
@@ -71,12 +70,12 @@ class BancoAbertoFragment : Fragment() {
         ///Trazaçoes
         binding.btnCredito.setOnClickListener {
             val valor = binding.editTextValor.text.toString()
-            viewModel.buscarDados(idusuario, idBanco, "credito", valor)
+            viewModel.buscarDados(idBanco, "credito", valor)
         }
 
         binding.btnDebito.setOnClickListener {
             val valor = binding.editTextValor.text.toString()
-            viewModel.buscarDados(idusuario, idBanco, "debito", valor)
+            viewModel.buscarDados( idBanco, "debito", valor)
         }
 
         binding.btnEditSaldo.setOnClickListener {
@@ -88,7 +87,7 @@ class BancoAbertoFragment : Fragment() {
 
         binding.btnConfirmarSaldo.setOnClickListener {
             val valor = binding.editSaldo.text.toString()
-            viewModel.editarSaldo(idusuario, idBanco, valor)
+            viewModel.editarSaldo( idBanco, valor)
 
             binding.btnEditSaldo.visibility = VISIBLE
             binding.btnConfirmarSaldo.visibility = GONE
