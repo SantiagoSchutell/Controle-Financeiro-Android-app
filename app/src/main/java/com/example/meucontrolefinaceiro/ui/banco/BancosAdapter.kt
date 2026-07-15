@@ -13,7 +13,7 @@ import coil.load
 import com.example.meucontrolefinaceiro.R
 import com.example.meucontrolefinaceiro.data.model.Bancos
 
-class BancosAdapter(private val onClick: (Bancos) -> Unit): ListAdapter<Bancos, BancosAdapter.BancosViewHolder>(DiffCallback()){
+class BancosAdapter(private val onClick: (Bancos) -> Unit, private  val onLongClick: (Bancos)-> Unit): ListAdapter<Bancos, BancosAdapter.BancosViewHolder>(DiffCallback()){
 
     class BancosViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){
         private val bancoNome: TextView = itemView.findViewById(R.id.textNomebanco)
@@ -22,13 +22,17 @@ class BancosAdapter(private val onClick: (Bancos) -> Unit): ListAdapter<Bancos, 
 
         private val itemBanco: ConstraintLayout = itemView.findViewById(R.id.itemBanco)
 
-        fun bind(item: Bancos, onClick: (Bancos) -> Unit){
+        fun bind(item: Bancos, onClick: (Bancos) -> Unit, onLongClick: (Bancos)-> Unit){
                 bancoNome.text = item.bancoNome
                 bancoTipo.text = item.tipoConta
                 bancoLogo.load(item.uriBanco)
                 itemBanco.setOnClickListener {
                     onClick(item)
-            }
+                }
+                itemBanco.setOnLongClickListener {
+                    onLongClick(item)
+                    true
+                }
         }
     }
 
@@ -39,7 +43,7 @@ class BancosAdapter(private val onClick: (Bancos) -> Unit): ListAdapter<Bancos, 
 
     override fun onBindViewHolder(holder: BancosViewHolder, position: Int) {
         val item = getItem(position)
-        holder.bind(item, onClick)
+        holder.bind(item, onClick, onLongClick)
     }
 
     class DiffCallback : DiffUtil.ItemCallback<Bancos>(){

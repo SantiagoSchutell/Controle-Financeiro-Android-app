@@ -4,17 +4,23 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.meucontrolefinaceiro.data.model.Bancos
 import com.example.meucontrolefinaceiro.R
+import com.example.meucontrolefinaceiro.data.model.Bancos
+import com.example.meucontrolefinaceiro.data.repository.AuthRepositoryImp
 import com.example.meucontrolefinaceiro.utils.Constants
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
+import dagger.hilt.android.lifecycle.HiltViewModel
+import jakarta.inject.Inject
 import java.io.ByteArrayOutputStream
 
-class BancosViewModel : ViewModel() {
+@HiltViewModel
+class BancosViewModel@Inject constructor(private val authRepository: AuthRepositoryImp) : ViewModel() {
+    private val idUsuario: String? = authRepository.getUserId()
 
     private val _erroNome = MutableLiveData<Int?>()
     val erroNome: LiveData<Int?> = _erroNome
@@ -84,10 +90,13 @@ class BancosViewModel : ViewModel() {
     }
 
     fun salvarStorage(idUser: String, bytesComprimidos: ByteArray, nomebanco: String, tipoConta:String,  context: Context){
-        val storageRef = FirebaseStorage.getInstance().reference.child(idUser).child(Constants.IMAGENS).child(nomebanco)
+        val storageRef = FirebaseStorage.getInstance()
+            .reference.child(idUser)
+            .child(Constants.IMAGENS)
+            .child(nomebanco)
+            .child(nomebanco)
 
         storageRef.putBytes(bytesComprimidos)
-
             .addOnSuccessListener { image->
                 storageRef.downloadUrl.addOnSuccessListener {uriDownload->
                     val urlParaSalvarNoBanco = uriDownload.toString()
@@ -156,6 +165,37 @@ class BancosViewModel : ViewModel() {
 
                 _contasList.value = list
             }
+    }
+
+    fun apagarBanco(banco : Bancos){
+        val idBanco = banco.bancoId
+        val nomeBanco = banco.bancoNome
+
+        val imagemRef = FirebaseStorage.getInstance()
+            .reference
+            .child(idUsuario!!)
+            .child(Constants.IMAGENS)
+            .child(nomeBanco)
+            .child(nomeBanco)
+        imagemRef.delete()
+            .addOnSuccessListener {
+                FirebaseFirestore.getInstance()
+                    .collection(Constants.USER)
+                    .document(idUsuario!!)
+                    .collection(Constants.CONTAS)
+                    .document(idBanco)
+                    .delete()
+
+                    .addOnSuccessListener {
+                        Log.i("testeApagar", "Banco Apagado")
+                    }
+            }
+            .addOnFailureListener {erro->
+                Log.i("testeApagar", "Erro ao Apagar: ${erro.message}")
+
+            }
+
+
     }
 
 }

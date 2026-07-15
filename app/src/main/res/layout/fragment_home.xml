@@ -8,14 +8,31 @@
     android:padding="24dp"
     tools:context=".ui.home.HomeFragment">
 
+    <View
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@color/white"
+        android:backgroundTint="?attr/colorSurfaceContainerHighest"
+        android:alpha="0.4"
+        app:layout_constraintBottom_toBottomOf="@+id/textSaldoTotalInvestido"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/textView9"
+        android:layout_marginTop="-24dp"
+        android:layout_marginBottom="-24dp"
+        android:layout_marginStart="-16dp"
+        android:layout_marginEnd="-16dp" />
+
     <TextView
         android:id="@+id/textView6"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:text="@string/saldoTotal"
+        android:textAppearance="?attr/textAppearanceLabelLarge"
         android:textColor="?attr/colorOnSurfaceVariant"
-        android:textSize="16sp"
+        android:textAllCaps="true"
+        android:letterSpacing="0.1"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -23,11 +40,12 @@
         android:id="@+id/textTotal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
+        android:layout_marginTop="8dp"
         android:text="R$ 45.623,00"
-        android:textColor="?attr/colorPrimary"
-        android:textSize="40sp"
+        android:textAppearance="?attr/textAppearanceDisplaySmall"
+        android:textColor="?attr/colorOnSurface"
         android:textStyle="bold"
+        android:letterSpacing="-0.02"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView6" />
 
@@ -37,9 +55,9 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="48dp"
         android:text="@string/debitos"
-        android:textColor="?attr/colorOnSurface"
-        android:textSize="16sp"
-        app:layout_constraintStart_toStartOf="parent"
+        android:textAppearance="?attr/textAppearanceBodyLarge"
+        android:textColor="?attr/colorOnSurfaceVariant"
+        app:layout_constraintStart_toStartOf="@+id/textView6"
         app:layout_constraintTop_toBottomOf="@+id/textTotal" />
 
     <TextView
@@ -47,8 +65,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="R$ 56.333,00"
+        android:textAppearance="?attr/textAppearanceTitleMedium"
         android:textColor="?attr/colorError"
-        android:textSize="16sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@+id/textView9"
         app:layout_constraintEnd_toEndOf="parent"
@@ -56,11 +74,15 @@
 
     <View
         android:id="@+id/divider1"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="1dp"
         android:layout_marginTop="16dp"
         android:background="?attr/colorOutlineVariant"
-        app:layout_constraintTop_toBottomOf="@+id/textView9" />
+        android:alpha="0.4"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView9"
+        tools:layout_editor_absoluteX="24dp" />
 
     <TextView
         android:id="@+id/textView11"
@@ -68,9 +90,9 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:text="@string/emConta"
-        android:textColor="?attr/colorOnSurface"
-        android:textSize="16sp"
-        app:layout_constraintStart_toStartOf="parent"
+        android:textAppearance="?attr/textAppearanceBodyLarge"
+        android:textColor="?attr/colorOnSurfaceVariant"
+        app:layout_constraintStart_toStartOf="@+id/textView6"
         app:layout_constraintTop_toBottomOf="@+id/divider1" />
 
     <TextView
@@ -78,8 +100,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="R$ 34.777,00"
+        android:textAppearance="?attr/textAppearanceTitleMedium"
         android:textColor="?attr/colorOnSurface"
-        android:textSize="16sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@+id/textView11"
         app:layout_constraintEnd_toEndOf="parent"
@@ -87,11 +109,15 @@
 
     <View
         android:id="@+id/divider2"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="1dp"
         android:layout_marginTop="16dp"
         android:background="?attr/colorOutlineVariant"
-        app:layout_constraintTop_toBottomOf="@+id/textView11" />
+        android:alpha="0.4"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView11"
+        tools:layout_editor_absoluteX="24dp" />
 
     <TextView
         android:id="@+id/textView13"
@@ -99,9 +125,9 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:text="@string/app_investidoSaldo"
-        android:textColor="?attr/colorOnSurface"
-        android:textSize="16sp"
-        app:layout_constraintStart_toStartOf="parent"
+        android:textAppearance="?attr/textAppearanceBodyLarge"
+        android:textColor="?attr/colorOnSurfaceVariant"
+        app:layout_constraintStart_toStartOf="@+id/textView6"
         app:layout_constraintTop_toBottomOf="@+id/divider2" />
 
     <TextView
@@ -109,21 +135,24 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="R$ 56.777,00"
+        android:textAppearance="?attr/textAppearanceTitleMedium"
         android:textColor="?attr/colorPrimary"
-        android:textSize="16sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@+id/textView13"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/textView13" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/btnContas"
+        style="@style/Widget.Material3.Button"
         android:layout_width="0dp"
-        android:layout_height="60dp"
-        android:layout_marginBottom="16dp"
+        android:layout_height="64dp"
+        android:layout_marginBottom="8dp"
         android:text="@string/minhas_contas"
-        android:textSize="16sp"
-        app:cornerRadius="12dp"
+        android:textAppearance="?attr/textAppearanceTitleMedium"
+        app:cornerRadius="24dp"
+        android:insetBottom="0dp"
+        android:insetTop="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

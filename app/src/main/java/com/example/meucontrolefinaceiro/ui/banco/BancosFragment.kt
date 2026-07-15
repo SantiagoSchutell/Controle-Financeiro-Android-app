@@ -14,13 +14,15 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import coil.load
-import com.example.meucontrolefinaceiro.data.model.Bancos
 import com.example.meucontrolefinaceiro.R
+import com.example.meucontrolefinaceiro.data.model.Bancos
 import com.example.meucontrolefinaceiro.databinding.FragmentBancosBinding
 import com.example.meucontrolefinaceiro.utils.ExtrasFunc
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class BancosFragment : Fragment() {
 
     private val binding by lazy {
@@ -29,7 +31,9 @@ class BancosFragment : Fragment() {
 
     private val viewModel: BancosViewModel by viewModels()
 
-    private val  adapterBancos = BancosAdapter(){click-> abrirBanco(click)}
+    private val  adapterBancos = BancosAdapter(onClick = {click-> abrirBanco(click) },
+        onLongClick = {apagar-> viewModel.apagarBanco(apagar)}
+    )
 
     private var idUsuario: String? = null
 
