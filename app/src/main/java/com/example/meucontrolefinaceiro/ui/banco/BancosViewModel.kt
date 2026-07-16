@@ -1,5 +1,6 @@
 package com.example.meucontrolefinaceiro.ui.banco
 
+import android.app.Application
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -8,18 +9,24 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.meucontrolefinaceiro.R
 import com.example.meucontrolefinaceiro.data.model.Bancos
 import com.example.meucontrolefinaceiro.data.repository.AuthRepositoryImp
+import com.example.meucontrolefinaceiro.data.repository.HomeRepository
+import com.example.meucontrolefinaceiro.data.sqlite.BancoDeDados
+import com.example.meucontrolefinaceiro.data.sqlite.SqLiteDAO
 import com.example.meucontrolefinaceiro.utils.Constants
+import com.example.meucontrolefinaceiro.utils.exibirDialog
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import dagger.hilt.android.lifecycle.HiltViewModel
 import jakarta.inject.Inject
+import kotlinx.coroutines.launch
 import java.io.ByteArrayOutputStream
 
 @HiltViewModel
-class BancosViewModel@Inject constructor(private val authRepository: AuthRepositoryImp) : ViewModel() {
+class BancosViewModel@Inject constructor(private val authRepository: AuthRepositoryImp, application: Application) : ViewModel() {
     private val idUsuario: String? = authRepository.getUserId()
 
     private val _erroNome = MutableLiveData<Int?>()
@@ -37,7 +44,9 @@ class BancosViewModel@Inject constructor(private val authRepository: AuthReposit
     private val _contasList = MutableLiveData<List<Bancos>>()
     val contasList: LiveData<List<Bancos>> = _contasList
 
-
+    private val bancoDeDados = BancoDeDados(application)
+    private val dao = SqLiteDAO(bancoDeDados)
+    private val repositori = HomeRepository(dao)
 
 
     fun adicionarNovaConta(nome : String, isCorrente: Boolean, uri: Uri, context: Context){
@@ -167,35 +176,49 @@ class BancosViewModel@Inject constructor(private val authRepository: AuthReposit
             }
     }
 
-    fun apagarBanco(banco : Bancos){
+    fun apagarBanco(banco : Bancos, context: Context){
         val idBanco = banco.bancoId
         val nomeBanco = banco.bancoNome
+        exibirDialog(context, R.string.apagarConta){status->
+            if (status){
+                _loading.value = true
+                val imagemRef = FirebaseStorage.getInstance()
+                    .reference
+                    .child(idUsuario!!)
+                    .child(Constants.IMAGENS)
+                    .child(nomeBanco)
+                    .child(nomeBanco)
 
-        val imagemRef = FirebaseStorage.getInstance()
-            .reference
-            .child(idUsuario!!)
-            .child(Constants.IMAGENS)
-            .child(nomeBanco)
-            .child(nomeBanco)
-        imagemRef.delete()
-            .addOnSuccessListener {
-                FirebaseFirestore.getInstance()
-                    .collection(Constants.USER)
-                    .document(idUsuario!!)
-                    .collection(Constants.CONTAS)
-                    .document(idBanco)
-                    .delete()
+                viewModelScope.launch {
+                    repositori.apagarDado(idBanco)
+                }
 
+                imagemRef.delete()
                     .addOnSuccessListener {
-                        Log.i("testeApagar", "Banco Apagado")
+                        FirebaseFirestore.getInstance()
+                            .collection(Constants.USER)
+                            .document(idUsuario!!)
+                            .collection(Constants.CONTAS)
+                            .document(idBanco)
+                            .delete()
+
+                            .addOnSuccessListener {
+                                Log.i("testeApagar", "Banco Apagado")
+                                _loading.value = false
+                            }
+                            .addOnFailureListener {
+                                _loading.value = false
+                            }
                     }
+                    .addOnFailureListener {erro->
+                        _loading.value = false
+                        Log.i("testeApagar", "Erro ao Apagar: ${erro.message}")
+
+                    }
+            }else{
+                _loading.value = false
             }
-            .addOnFailureListener {erro->
-                Log.i("testeApagar", "Erro ao Apagar: ${erro.message}")
-
-            }
-
-
+        }
     }
 
 }

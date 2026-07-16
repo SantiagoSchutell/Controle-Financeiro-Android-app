@@ -7,7 +7,7 @@ import kotlinx.coroutines.withContext
 class HomeRepository(private val userDAO: SqLiteDAO) {
     suspend fun adicionarDados(idConta: String, tipoConta: String, saldoTotal: String, debitoTotal: String){
          withContext(Dispatchers.IO){
-            userDAO.SQLiteAdd(idConta, tipoConta, saldoTotal, debitoTotal)
+            userDAO.addSQLite(idConta, tipoConta, saldoTotal, debitoTotal)
         }
     }
 
@@ -15,8 +15,13 @@ class HomeRepository(private val userDAO: SqLiteDAO) {
         return withContext(Dispatchers.IO) {
             val corretoras = userDAO.obterTotaisPorTipo("corretora")
             val contaCorrente = userDAO.obterTotaisPorTipo("contaCorrente")
-
             Pair(corretoras, contaCorrente)
+        }
+    }
+
+    suspend fun apagarDado(idBanco: String){
+        withContext(Dispatchers.IO){
+            userDAO.removerSQLite(idBanco)
         }
     }
 

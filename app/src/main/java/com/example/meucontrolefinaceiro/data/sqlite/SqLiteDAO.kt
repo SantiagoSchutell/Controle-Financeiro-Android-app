@@ -28,7 +28,7 @@ class SqLiteDAO(private val dbHelper: BancoDeDados ) {
         cursor.close()
         return TotalFinanceiro(saldoSomado, debitoSomado)
     }
-    fun SQLiteAdd(idConta: String, tipoConta: String, saldo: String, debito: String){
+    fun addSQLite(idConta: String, tipoConta: String, saldo: String, debito: String){
         val db = dbHelper.writableDatabase
         val values = ContentValues().apply {
             put("idConta", idConta)
@@ -40,8 +40,13 @@ class SqLiteDAO(private val dbHelper: BancoDeDados ) {
         db.insertWithOnConflict(Constants.SQLite, null, values, SQLiteDatabase.CONFLICT_REPLACE )
     }
 
-    fun  SQLiteRemover(item: String){
-        //Não util no momento
+    fun removerSQLite(idBanco: String){
+        val db = dbHelper.writableDatabase
+
+        val selection = "idConta = ?"
+        val selectionArgs = arrayOf(idBanco)
+
+        db.delete(Constants.SQLite, selection, selectionArgs)
     }
 
 }

@@ -32,7 +32,7 @@ class BancosFragment : Fragment() {
     private val viewModel: BancosViewModel by viewModels()
 
     private val  adapterBancos = BancosAdapter(onClick = {click-> abrirBanco(click) },
-        onLongClick = {apagar-> viewModel.apagarBanco(apagar)}
+        onLongClick = {apagar-> viewModel.apagarBanco(apagar, requireContext())}
     )
 
     private var idUsuario: String? = null

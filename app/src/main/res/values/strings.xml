@@ -111,5 +111,8 @@
     <string name="emConta">Saldo em Conta</string>
 
 
+    <string name="apagarConta">Você realmente quer apagar está conta?</string>
+
+
 
 </resources>
