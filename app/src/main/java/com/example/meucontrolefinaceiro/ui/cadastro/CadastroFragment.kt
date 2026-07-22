@@ -59,11 +59,6 @@ class CadastroFragment : Fragment() {
             }
         }
 
-        viewModel.cadastroSucesso.observe(viewLifecycleOwner) { isCadastrado ->
-            if (isCadastrado){
-                findNavController().navigate(R.id.action_fragmentCadastroTobancos)
-            }
-        }
 
         binding.btnRegister.setOnClickListener {
             val userNome = binding.textEditName.text.toString()

@@ -4,21 +4,19 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.meucontrolefinaceiro.R
-import com.example.meucontrolefinaceiro.data.repository.AuthRepositoryImp
 import com.example.meucontrolefinaceiro.utils.Constants
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
-import jakarta.inject.Inject
 
-class CadastroViewModel@Inject constructor(private val authRepository: AuthRepositoryImp) : ViewModel() {
-    private val _nomeErro = MutableLiveData<Int>()
+class CadastroViewModel(): ViewModel() {
+    private val _nomeErro = MutableLiveData<Int?>()
     val nomeErro: LiveData<Int?> = _nomeErro
 
-    private val _emailErro = MutableLiveData<Int>()
+    private val _emailErro = MutableLiveData<Int?>()
     val emailErro: LiveData<Int?> = _emailErro
 
-    private val _userSenha = MutableLiveData<Int>()
+    private val _userSenha = MutableLiveData<Int?>()
     val userSenha: LiveData<Int?> = _userSenha
 
     private val _dadosSalvo = MutableLiveData<Boolean>()
@@ -89,7 +87,6 @@ class CadastroViewModel@Inject constructor(private val authRepository: AuthRepos
             .set(data, SetOptions.merge())
             .addOnSuccessListener {
                 _dadosSalvo.value = true
-                _cadastroSucesso.value = true
 
             }
             .addOnFailureListener { error ->

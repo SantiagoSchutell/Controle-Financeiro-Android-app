@@ -9,6 +9,7 @@ import android.view.View.VISIBLE
 import android.view.ViewGroup
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -85,7 +86,7 @@ class BancosFragment : Fragment() {
                 resId?.let { getString(it) }.toString(),
                 Snackbar.LENGTH_LONG
             ).show()
-            binding.radioGroup.setBackgroundColor(R.color.red)
+            binding.radioGroup.setBackgroundColor(ContextCompat.getColor( requireContext(),R.color.red))
         }
 
         viewModel.loading.observe(viewLifecycleOwner) { isloading ->
