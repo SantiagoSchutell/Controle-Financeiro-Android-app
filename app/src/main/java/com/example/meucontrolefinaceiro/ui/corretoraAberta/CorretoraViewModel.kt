@@ -208,16 +208,11 @@ class CorretoraViewModel @Inject constructor(private val authRepository: AuthRep
 
             val lista = document?.mapNotNull { doc ->
                 val somaTotal = document?.documents?.sumOf { doc -> doc.getDouble("saldo") ?: 0.0 } ?: 0.0
-
-
-
                 Corretora(
                     doc.getString("idAtivo") ?: "null",
                     dobleToReal(doc.getDouble("saldo")!!),
                     doc.getString("AtivoNome") ?: "null"
-
                 )
-
             } ?: emptyList()
 
             val somaTotal = document?.documents?.sumOf { doc -> doc.getDouble("saldo") ?: 0.0 } ?: 0.0

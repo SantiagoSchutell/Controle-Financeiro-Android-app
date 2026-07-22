@@ -120,7 +120,7 @@
         tools:layout_editor_absoluteX="24dp" />
 
     <TextView
-        android:id="@+id/textView13"
+        android:id="@+id/textDescricaoTranzacao"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
@@ -138,9 +138,9 @@
         android:textAppearance="?attr/textAppearanceTitleMedium"
         android:textColor="?attr/colorPrimary"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@+id/textView13"
+        app:layout_constraintBottom_toBottomOf="@+id/textDescricaoTranzacao"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/textView13" />
+        app:layout_constraintTop_toTopOf="@+id/textDescricaoTranzacao" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btnContas"

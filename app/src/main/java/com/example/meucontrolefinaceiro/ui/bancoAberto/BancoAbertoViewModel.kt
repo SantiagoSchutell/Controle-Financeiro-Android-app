@@ -7,18 +7,23 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.meucontrolefinaceiro.R
+import com.example.meucontrolefinaceiro.data.model.Tranzacao
 import com.example.meucontrolefinaceiro.data.repository.AuthRepositoryImp
 import com.example.meucontrolefinaceiro.data.repository.HomeRepository
 import com.example.meucontrolefinaceiro.data.sqlite.BancoDeDados
 import com.example.meucontrolefinaceiro.data.sqlite.SqLiteDAO
+import com.example.meucontrolefinaceiro.utils.Constants
 import com.example.meucontrolefinaceiro.utils.dobleToReal
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 import dagger.hilt.android.lifecycle.HiltViewModel
 import jakarta.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
+import java.util.Date
+import java.util.UUID
 
 @HiltViewModel
 class BancoAbertoViewModel@Inject constructor(private val authRepository: AuthRepositoryImp, application: Application) : AndroidViewModel(application) {
@@ -55,12 +60,15 @@ class BancoAbertoViewModel@Inject constructor(private val authRepository: AuthRe
     private val _dadosBanco = MutableLiveData<DadosDaConta>()
     val dadosBanco: LiveData<DadosDaConta> = _dadosBanco
 
+    private val _dadosTranzacaos = MutableLiveData<List<Tranzacao>>()
+    val dadosTranzacoes: LiveData<List<Tranzacao>> = _dadosTranzacaos
+
     private val bancoDeDados = BancoDeDados(application)
     private val dao = SqLiteDAO(bancoDeDados)
     private val repositori = HomeRepository(dao)
 
 
-    fun buscarDados(idConta: String?, tipo: String, valor: String) {
+    fun buscarDados(idConta: String?, tipo: String, valor: String, descricao: String?) {
         _errorValorAddTrz.value = null
 
         if (valor.isBlank()) {
@@ -76,12 +84,12 @@ class BancoAbertoViewModel@Inject constructor(private val authRepository: AuthRe
 
         val valorEmNum = valor.toDoubleOrNull()!!
         viewModelScope.launch {
-            carregarDados(idConta, tipo, valorEmNum)
+            carregarDados(idConta, tipo, valorEmNum, descricao)
         }
 
     }
 
-    suspend fun carregarDados(idConta: String, tipo: String, valor: Double) {
+    suspend fun carregarDados(idConta: String, tipo: String, valor: Double, descricao: String?) {
         val ref = FirebaseFirestore.getInstance().collection("usuario")
             .document(idUser!!).collection("Contas").document(idConta)
         try {
@@ -95,7 +103,7 @@ class BancoAbertoViewModel@Inject constructor(private val authRepository: AuthRe
 
 
 
-                adicionarTrazaçoes(idConta, tipo, valor)
+                adicionarTrazaçoes(idConta, tipo, valor, descricao)
 
             } else {
                 Log.i("ErroCarregarDados", "Documentos não encontrado")
@@ -105,7 +113,7 @@ class BancoAbertoViewModel@Inject constructor(private val authRepository: AuthRe
         }
     }
 
-    fun adicionarTrazaçoes(idConta: String, tipo: String, valor: Double) {
+    fun adicionarTrazaçoes(idConta: String, tipo: String, valor: Double, descricao: String?) {
         _loading.value = true
         if (valor == null) {
             _addTrazacaoStatus.value = R.string.addTraz_failed
@@ -118,24 +126,54 @@ class BancoAbertoViewModel@Inject constructor(private val authRepository: AuthRe
         val newSaldoLiq = saldo + valor - debito
         val newSaldoLiqDeb = saldo - valor - debito
 
+        //tranzacao
+        val valorH = valor
+        val descricaoH = descricao
+        val dataH = Date()
+        val tipoH = tipo
+        val idHistorico = UUID.randomUUID().toString()
+
+
         val ref = FirebaseFirestore.getInstance()
             .collection("usuario")
             .document(idUser!!)
             .collection("Contas")
             .document(idConta)
 
+        val refHistorico = FirebaseFirestore.getInstance()
+            .collection("usuario")
+            .document(idUser!!)
+            .collection("Contas")
+            .document(idConta)
+            .collection("historico")
+            .document(idHistorico)
 
         if (tipo == "credito") {
             val valores = mapOf(
                 "saldo" to newSaldo,
                 "saldoLiq" to newSaldoLiq
             )
+
+            val valoresHistorico = mapOf(
+                "idTranzacao" to idHistorico,
+                "Valor" to valorH,
+                "descricao" to descricaoH,
+                "data" to dataH,
+                "tipo" to "CREDITO"
+            )
+
             ref.update(valores)
                 .addOnSuccessListener {
-                    _loading.value = false
-                    _addTrazacaoStatus.value = R.string.addTraz_Sucess
-                    atualizarDados( idConta)
-
+                    refHistorico.set(valoresHistorico)
+                        .addOnSuccessListener {
+                            _loading.value = false
+                            _addTrazacaoStatus.value = R.string.addTraz_Sucess
+                            atualizarDados( idConta)
+                        }
+                        .addOnFailureListener {
+                            _loading.value = false
+                            _addTrazacaoStatus.value = R.string.addTraz_failed2
+                        }
                 }
                 .addOnFailureListener { error ->
                     _loading.value = false
@@ -144,6 +182,15 @@ class BancoAbertoViewModel@Inject constructor(private val authRepository: AuthRe
 
 
         } else {
+            val valoresHistorico = mapOf(
+                "idTranzacao" to idHistorico,
+                "Valor" to valorH,
+                "descricao" to descricaoH,
+                "data" to dataH,
+                "tipo" to "DEBITO"
+            )
+
+
             val valores = mapOf(
                 "debito" to newSaldoDeb,
                 "saldoLiq" to newSaldoLiqDeb
@@ -151,10 +198,16 @@ class BancoAbertoViewModel@Inject constructor(private val authRepository: AuthRe
             )
             ref.update(valores)
                 .addOnSuccessListener {
-                    _loading.value = false
-                    _addTrazacaoStatus.value = R.string.addTraz_Sucess
-                    atualizarDados(idConta)
-
+                    refHistorico.set(valoresHistorico)
+                        .addOnSuccessListener {
+                            _loading.value = false
+                            _addTrazacaoStatus.value = R.string.addTraz_Sucess
+                            atualizarDados(idConta)
+                        }
+                        .addOnFailureListener {
+                            _loading.value = false
+                            _addTrazacaoStatus.value = R.string.addTraz_failed2
+                        }
                 }
                 .addOnFailureListener { error ->
                     _loading.value = false
@@ -198,12 +251,16 @@ class BancoAbertoViewModel@Inject constructor(private val authRepository: AuthRe
         val ref = FirebaseFirestore.getInstance().collection("usuario")
             .document(idUser!!).collection("Contas").document(idConta)
 
+        val refHistorico = FirebaseFirestore.getInstance().collection(Constants.USER)
+            .document(idUser).collection(Constants.CONTAS).document(idConta)
+            .collection(Constants.HISTORICO).orderBy("data", Query.Direction.DESCENDING).limit(10)
+
         ref.get()
             .addOnSuccessListener { snapshot ->
                 val saldoAtual = snapshot.getDouble("saldo")!!
                 val debitoAtual = snapshot.getDouble("debito")!!
                 val newLiquido = saldoAtual - debitoAtual
-               val nomeConta = snapshot.getString("nomeConta").toString()
+                val nomeConta = snapshot.getString("nomeConta").toString()
                 val tipoConta = snapshot.getString("tipoConta").toString()
                 val saldo = snapshot.getDouble("saldo")!!
                 val saldoLiq = newLiquido
@@ -215,7 +272,12 @@ class BancoAbertoViewModel@Inject constructor(private val authRepository: AuthRe
                 val formatdebito = dobleToReal(debito)
 
                 viewModelScope.launch {
-                    repositori.adicionarDados(idConta, "contaCorrente",saldo.toString(), debito.toString())
+                    repositori.adicionarDados(
+                        idConta,
+                        "contaCorrente",
+                        saldo.toString(),
+                        debito.toString()
+                    )
                 }
 
                 val dados = DadosDaConta(
@@ -228,9 +290,29 @@ class BancoAbertoViewModel@Inject constructor(private val authRepository: AuthRe
 
 
                 _dadosBanco.postValue(dados)
+
+                refHistorico.addSnapshotListener { value, error ->
+                    val lista = value?.mapNotNull { doc ->
+                        val tranzacaoId = doc.getString("idTranzacao") ?: ""
+                        val valorTranzacao = doc.getDouble("Valor") ?: 0.0
+                        val descricao = doc.getString("descricao")
+                        val tipoTranzacao = doc.getString("tipo") ?: ""
+                        val dataTranzacao = doc.getTimestamp("data")!!.toDate()
+
+                        Tranzacao(
+                            tranzacaoId = tranzacaoId,
+                            valorTranzacao = valorTranzacao,
+                            descricao = descricao,
+                            tipoTranzacao = tipoTranzacao,
+                            dataTranzacao = dataTranzacao
+                        )
+
+                    } ?: emptyList()
+                    _dadosTranzacaos.value = lista
+
+                }
             }
     }
-
 }
 
 

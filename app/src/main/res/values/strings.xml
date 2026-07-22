@@ -83,6 +83,8 @@
     <string name="debito">Débito</string>
     <string name="credito">Crédito</string>
 
+    <string name="descricaoHistorico">Descrição (Opicional)</string>
+
     <!-- Status de Transação -->
     <string name="addTraz_Sucess">Adicionado com sucesso!</string>
     <string name="addTraz_failed">Valor inválido!</string>

@@ -7,4 +7,8 @@
     <color name="azul2">#01123E</color>
     <color name="verde">#4CAF50</color>
     <color name="button">#5500FF</color>
+
+
+    <color name="debitoColor">#18E70303</color>
+    <color name="creditoColor">#5125E703</color>
 </resources>

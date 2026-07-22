@@ -12,6 +12,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.navArgs
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.meucontrolefinaceiro.databinding.FragmentFragmentbancoAbertoBinding
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
@@ -21,6 +22,8 @@ import kotlinx.coroutines.launch
 class BancoAbertoFragment : Fragment() {
     private val args: BancoAbertoFragmentArgs by navArgs()
     private val viewModel: BancoAbertoViewModel by viewModels()
+
+    private val tranzacaoAdapter = BancoHistoricoAdapter()
 
     private val binding by lazy {
         FragmentFragmentbancoAbertoBinding.inflate(layoutInflater)
@@ -56,6 +59,15 @@ class BancoAbertoFragment : Fragment() {
         viewModel.erroValorEdit.observe(viewLifecycleOwner) { error ->
             binding.editSaldo.error = error?.let { getString(it) }
         }
+        viewModel.dadosTranzacoes.observe(viewLifecycleOwner){dados->
+            tranzacaoAdapter.submitList(dados)
+        }
+
+        binding.recycleTranzacoes.apply {
+            adapter = tranzacaoAdapter
+            layoutManager = LinearLayoutManager(requireContext())
+        }
+
 
 
         //atualizar Tela
@@ -70,12 +82,14 @@ class BancoAbertoFragment : Fragment() {
         ///Trazaçoes
         binding.btnCredito.setOnClickListener {
             val valor = binding.editTextValor.text.toString()
-            viewModel.buscarDados(idBanco, "credito", valor)
+            val descricao = binding.editDescricao.text.toString()
+            viewModel.buscarDados(idBanco, "credito", valor, descricao)
         }
 
         binding.btnDebito.setOnClickListener {
             val valor = binding.editTextValor.text.toString()
-            viewModel.buscarDados( idBanco, "debito", valor)
+            val descricao = binding.editDescricao.text.toString()
+            viewModel.buscarDados( idBanco, "debito", valor, descricao)
         }
 
         binding.btnEditSaldo.setOnClickListener {
@@ -96,7 +110,14 @@ class BancoAbertoFragment : Fragment() {
 
 
         }
-
+        binding.btnClose.setOnClickListener {
+            binding.floatAddTranzacao.visibility = VISIBLE
+            binding.adTrazacao.visibility = GONE
+        }
+        binding.floatAddTranzacao.setOnClickListener {
+            binding.floatAddTranzacao.visibility = GONE
+            binding.adTrazacao.visibility = VISIBLE
+        }
 
 
     }

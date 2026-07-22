@@ -51,7 +51,8 @@ android {
 
 dependencies {
    implementation("com.google.dagger:hilt-android:2.57.1")
-   ksp("com.google.dagger:hilt-android-compiler:2.57.1")
+    implementation(libs.androidx.recyclerview)
+    ksp("com.google.dagger:hilt-android-compiler:2.57.1")
 
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
