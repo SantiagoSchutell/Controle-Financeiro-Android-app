@@ -26,4 +26,4 @@ Esse é um aplicativo de controlar seus gastos e contas
 </p>
 
 ---
-*APK compilado: https://github.com/SantiagoSchutell/Controle-Financeiro-Android-app/blob/6c6eb67296eff5545809ac56b695da591f8db32b/financeApp.apk
+*APK compilado: https://github.com/SantiagoSchutell/Controle-Financeiro-Android-app/blob/19de1551f6af2ca7c91c4df08328b53c1d9e49f6/financeApp.apk
