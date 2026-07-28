@@ -25,9 +25,10 @@ class BancoAbertoFragment : Fragment() {
 
     private val tranzacaoAdapter = BancoHistoricoAdapter()
 
-    private val binding by lazy {
-        FragmentFragmentbancoAbertoBinding.inflate(layoutInflater)
-    }
+
+
+    private var _binding: FragmentFragmentbancoAbertoBinding? = null
+    private val binding get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -120,6 +121,11 @@ class BancoAbertoFragment : Fragment() {
         }
 
 
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
     }
 
 }

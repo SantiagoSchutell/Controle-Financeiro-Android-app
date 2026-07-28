@@ -15,9 +15,10 @@ import kotlinx.coroutines.launch
 
 class HomeFragment() : Fragment() {
     private val viewModel : HomeViewModel by viewModels()
-    private val binding by lazy {
-        FragmentHomeBinding.inflate(layoutInflater)
-    }
+
+
+    private var _binding : FragmentHomeBinding? = null
+    private val binding get() = _binding!!
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -56,5 +57,10 @@ class HomeFragment() : Fragment() {
            findNavController().navigate(R.id.action_fragmentHomeToBancos)
         }
 
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
     }
 }

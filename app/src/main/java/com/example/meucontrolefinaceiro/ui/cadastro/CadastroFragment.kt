@@ -12,9 +12,9 @@ import com.example.meucontrolefinaceiro.databinding.FragmentCadastroBinding
 import com.google.android.material.snackbar.Snackbar
 
 class CadastroFragment : Fragment() {
-    private val binding by lazy {
-        FragmentCadastroBinding.inflate(layoutInflater)
-    }
+
+    private var _binding : FragmentCadastroBinding? = null
+    private val binding get() = _binding!!
 
     private val viewModel: CadastroViewModel by viewModels()
 
@@ -75,6 +75,9 @@ class CadastroFragment : Fragment() {
         }
     }
 
-
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
+    }
 
 }

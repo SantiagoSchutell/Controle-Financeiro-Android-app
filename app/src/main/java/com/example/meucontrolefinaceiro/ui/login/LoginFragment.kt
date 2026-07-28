@@ -13,9 +13,10 @@ import com.example.meucontrolefinaceiro.R
 import com.example.meucontrolefinaceiro.databinding.FragmentLoginBinding
 import com.google.android.material.snackbar.Snackbar
 class LoginFragment : Fragment() {
-    private val binding by lazy {
-        FragmentLoginBinding.inflate(layoutInflater)
-    }
+
+    private var _binding: FragmentLoginBinding? = null
+    private val binding get() = _binding!!
+
     private val viewModel: LoginViewModel by viewModels()
 
 
@@ -75,5 +76,10 @@ class LoginFragment : Fragment() {
             findNavController().navigate(R.id.action_loginToCadastro)
         }
 
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
     }
 }

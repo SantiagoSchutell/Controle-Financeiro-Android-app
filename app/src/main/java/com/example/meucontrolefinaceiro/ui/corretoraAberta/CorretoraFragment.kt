@@ -19,9 +19,9 @@ import dagger.hilt.android.AndroidEntryPoint
 class CorretoraFragment : Fragment() {
     private val args: CorretoraFragmentArgs by navArgs()
     private val ViewModel: CorretoraViewModel by viewModels()
-    private val binding by lazy {
-        FragmentCorretoraBinding.inflate(layoutInflater)
-    }
+
+    private var _binding: FragmentCorretoraBinding? = null
+    private val binding get() = _binding!!
 
     private var idBanco: String? = null
 
@@ -101,6 +101,11 @@ class CorretoraFragment : Fragment() {
         }
 
 
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
     }
 
 }

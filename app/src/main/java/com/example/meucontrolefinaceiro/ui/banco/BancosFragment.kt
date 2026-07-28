@@ -26,9 +26,10 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class BancosFragment : Fragment() {
 
-    private val binding by lazy {
-        FragmentBancosBinding.inflate(layoutInflater)
-    }
+
+    private var _binding: FragmentBancosBinding? = null
+    private val binding get() = _binding!!
+
 
     private val viewModel: BancosViewModel by viewModels()
 
@@ -170,5 +171,10 @@ class BancosFragment : Fragment() {
             findNavController().navigate(action)
         }
 
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
     }
 }
